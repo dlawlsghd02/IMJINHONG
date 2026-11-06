@@ -1,0 +1,16 @@
+.app-header { flex-wrap: wrap; }
+#address-search-host { position: relative; z-index: 10; flex: 1; min-width: min(100%, 300px); max-width: 600px; }
+.address-search { position: relative; width: 100%; background: #fff; color: #19383e; padding: 10px; border-radius: 8px; }
+.address-search form { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; }
+.address-search label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.address-search label:nth-child(2) { flex: 1; min-width: 120px; }
+.address-search input, .address-search select, .address-search button { font: inherit; min-height: 44px; max-width: 100%; padding: 8px; }
+.address-search input { width: 100%; }
+.address-search [role="status"] { font-size: 12px; margin: 6px 0 0; overflow-wrap: anywhere; }
+.address-search-results { margin-top: 6px; }
+.address-search-results button { display: block; width: 100%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 0; border-radius: 4px; background: #f0f5f3; }
+.address-search-results button[aria-pressed="true"] { background: #cce5df; outline: 2px solid #17685f; outline-offset: -2px; }
+@media (max-width: 640px) {
+  #address-search-host { flex-basis: 100%; max-width: none; }
+  .address-search { width: 100%; padding: 8px; }
+}

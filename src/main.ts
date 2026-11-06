@@ -1,6 +1,8 @@
 import 'ol/ol.css';
 import './styles/base.css';
 import './styles/map.css';
+import './styles/search.css';
+import './styles/parcel.css';
 import { readEnvironment } from './config/env';
 import { createBasemaps } from './map/basemaps';
 import { createMap } from './map/createMap';
@@ -24,7 +26,7 @@ try {
     ui.status.dataset.state = failures ? 'error' : 'normal';
     const label = basemapDefinitions[id].label;
     ui.status.textContent = failures
-      ? `${label}: 타일 요청 ${failures}건 실패. 인증키·등록 서비스 URL·네트워크·제공 범위를 확인하세요. 원인은 개발자 도구 Network에서 확인할 수 있습니다.`
+      ? `${label}: 누적 타일 요청 ${failures}건 실패(시작 또는 재요청 이후). 현재 실패 원인은 개발자 도구 Network에서 확인하세요.`
       : pending ? `${label} 타일 불러오는 중…` : `${label} · 타일 요청 오류 없음`;
   });
   cleanup.push(() => basemaps.dispose());
@@ -32,7 +34,19 @@ try {
   cleanup.push(() => instance.dispose());
   cleanup.push(bindMapControls(root, instance.map, (id) => basemaps.select(id)));
   cleanup.push(bindCoordinateDisplay(instance.map, ui.basis, ui.coordinates));
-  features.forEach((feature) => cleanup.push(feature.mount({ map: instance.map })));
+  // Optional feature initialization must not tear down a working map.
+  features.forEach((feature) => {
+    try {
+      cleanup.push(feature.mount({ map: instance.map, searchHost: ui.searchHost,
+        parcelControlsHost: ui.parcelControlsHost, parcelPanelHost: ui.parcelPanelHost, vworldApiKey }));
+    } catch {
+      const notice = document.createElement('p');
+      notice.setAttribute('role', 'status');
+      notice.textContent = '추가 기능 초기화에 실패했습니다. 기본 지도는 계속 사용할 수 있습니다.';
+      ui.status.parentElement?.append(notice);
+      cleanup.push(() => notice.remove());
+    }
+  });
   const retry = () => basemaps.retry();
   ui.retry.addEventListener('click', retry);
   cleanup.push(() => ui.retry.removeEventListener('click', retry));

@@ -3,6 +3,7 @@ export function createLayout(root: HTMLElement) {
     <div class="app-shell">
       <header class="app-header">
         <div><h1>IMJINHONG</h1><p>전국 공간정보 지도</p></div>
+        <div id="address-search-host"></div>
         <span class="header-description">대한민국에서 시작하는 공간 탐색</span>
       </header>
       <main class="map-shell" aria-label="전국 지도">
@@ -15,6 +16,8 @@ export function createLayout(root: HTMLElement) {
           <button type="button" data-zoom="1" aria-label="지도 확대" disabled>+</button>
           <button type="button" data-zoom="-1" aria-label="지도 축소" disabled>−</button>
         </div>
+        <div id="parcel-controls-host"></div>
+        <div id="parcel-panel-host"></div>
         <section class="status-panel" aria-label="지도 상태">
           <p id="map-status" role="status" aria-live="polite">지도 설정 확인 중…</p>
           <button id="retry-tiles" type="button" hidden>타일 다시 요청</button>
@@ -33,6 +36,9 @@ export function createLayout(root: HTMLElement) {
   };
   return {
     target: get<HTMLDivElement>('#map'),
+    searchHost: get<HTMLDivElement>('#address-search-host'),
+    parcelControlsHost: get<HTMLDivElement>('#parcel-controls-host'),
+    parcelPanelHost: get<HTMLDivElement>('#parcel-panel-host'),
     status: get<HTMLParagraphElement>('#map-status'),
     retry: get<HTMLButtonElement>('#retry-tiles'),
     basis: get<HTMLSpanElement>('#coordinate-basis'),

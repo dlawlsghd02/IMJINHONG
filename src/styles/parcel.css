@@ -1,0 +1,24 @@
+#parcel-controls-host { position: absolute; z-index: 3; top: 82px; left: 16px; width: min(240px, calc(100% - 90px)); pointer-events: none; }
+.parcel-controls button { pointer-events: auto; min-height: 44px; padding: 8px 14px; background: #fff; color: #173855; border: 1px solid #9eaebb; border-radius: 6px; }
+.parcel-controls button[aria-pressed="true"] { background: #173855; color: #fff; }
+.parcel-controls p { margin: 6px 0 0; padding: 5px 8px; background: rgba(255,255,255,.94); color: #243747; font-size: 12px; border-radius: 4px; }
+#parcel-panel-host { position: absolute; z-index: 4; right: 76px; top: 16px; width: min(330px, calc(100% - 360px)); max-height: calc(100% - 130px); overflow: auto; }
+.parcel-panel { background: #fff; color: #183245; padding: 12px; border: 1px solid #b1c1cc; border-radius: 8px; box-shadow: 0 3px 12px #0002; font-size: 13px; overflow-wrap: anywhere; }
+.parcel-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.parcel-panel h2 { font-size: 16px; margin: 0; }
+.parcel-panel button { min-height: 44px; padding: 6px 12px; }
+.parcel-panel dl { display: grid; grid-template-columns: minmax(76px, 1fr) 2fr; gap: 6px 8px; margin: 12px 0; }
+.parcel-panel dt { font-weight: 600; }
+.parcel-panel dd { margin: 0; }
+.parcel-panel dl > a { grid-column: 1 / -1; }
+.parcel-panel a { display: inline-block; color: #075b99; margin: 4px 0; }
+.parcel-panel p { margin: 8px 0; }
+.parcel-note { border-top: 1px solid #d7e0e7; padding-top: 8px; font-size: 12px; }
+@media (max-width: 900px) {
+  #parcel-panel-host { top: auto; bottom: 98px; left: 10px; right: 10px; width: auto; max-height: min(34vh, 280px); max-height: min(34dvh, 280px); }
+  #parcel-controls-host { top: 76px; left: 10px; width: min(240px, calc(100% - 80px)); }
+}
+@media (max-height: 500px) {
+  #parcel-controls-host p { max-height: 34px; overflow: auto; }
+  #parcel-panel-host { bottom: 75px; max-height: 32vh; }
+}

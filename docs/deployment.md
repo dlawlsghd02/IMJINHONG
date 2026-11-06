@@ -1,5 +1,45 @@
 # 인증키와 배포 안내
 
+## 3차 지적 기능 배포 전 조건
+
+이번 변경은 코드·문서 작성만 진행했습니다. 테스트·빌드·API 호출·배포는 수행하지 않았습니다.
+기존 `VITE_VWORLD_API_KEY`를 재사용하며 새 Secret이나 환경변수는 추가하지 않습니다.
+지적 JSONP는 별도 sandbox iframe에서 공식 `/req/data`만 허용합니다. 검색 JSONP의 동작 확인은 지적 API 인증 호환성을 보장하지 않습니다.
+로컬 및 Pages에서 Origin/Referer, CSP, 콜백 실행, 메시지 전달을 별도로 확인해야 합니다.
+자동 BOX 조회는 기본 비활성이고, 토지임야·공시지가 브라우저 전송은 요청 자체를 생성하지 않습니다.
+설정값만 바꿔 미확인 CORS/JSONP를 활성화하지 마세요. 공식 규격과 실제 브라우저 응답 확인 후 별도 구현 승인이 필요합니다.
+키/전체 URL/iframe srcdoc/HAR 및 원본 응답을 로그나 공개 자료에 포함하지 마세요.
+구체적인 단계는 [지적 기능 검증 순서](parcels.md)를 참고하세요.
+
+## 주소 검색 JSONP 연동 (2026-11-06)
+
+공식 검색 API 2.0 문서 https://www.vworld.kr/dev/v4dv_search2_s001.do 를 읽기 전용 HTTP 요청으로 확보했습니다.
+도로명은 type=ADDRESS/category=ROAD, 지번은 type=ADDRESS/category=PARCEL입니다.
+request=search, format=json, errorFormat=json, crs=EPSG:4326, page/size, key, query를 사용합니다.
+공식 문서의 callback 지원과 활용모델의 dataType=jsonp/jsonp=callback 코드를 근거로 구현했습니다.
+추가 패키지는 없으며 기존 VITE_VWORLD_API_KEY 및 Repository Secret을 재사용합니다.
+
+선행 별도 승인 검증에서 도로명·지번 각 1회 일반 JSON 요청은 HTTP 200/status=OK였습니다.
+EPSG:4326과 x=경도/y=위도를 실제 위치와 대조했습니다. 두 응답에 Access-Control-Allow-Origin이
+없어 JSONP를 선택했습니다. 모든 Origin의 CORS 정책이나 실제 브라우저 JSONP를 검증한 것은 아닙니다.
+
+요청은 공식 https://api.vworld.kr/req/search 로만 생성하며 임의 endpoint를 받지 않습니다.
+고유 callback을 sandbox iframe에 두고 완료·오류·타임아웃·무효화 시 문서 전체를 제거합니다.
+이 방식이 V-World의 Referrer·도메인 인증과 호환되는지 로컬과 Pages에서 별도 검증해야 합니다.
+Referrer를 위조하거나 임의 domain 파라미터, 프록시, no-cors를 사용하지 않습니다.
+외부 JSONP JavaScript 실행은 JSON 데이터 수신과 보안 성격이 다릅니다.
+allow-same-origin 없는 sandbox와 CSP, source/요청ID 검사를 적용하되 브라우저 검증이 필요합니다.
+요청 URL 및 iframe srcdoc에는 브라우저용 키가 포함될 수 있습니다. DevTools·HAR 공유 시 가립니다.
+
+새 검색/입력 변경은 이전 결과를 논리적으로 무효화하며 이미 전송된 요청의 사용량 취소는 보장하지 않습니다.
+버튼/Enter에만 page=1/size=1로 요청하며 자동완성 호출·페이지 이동·자동 재시도는 없습니다.
+첫 주소 한 줄만 표시하고 건물명·좌표·건수 등의 상세 정보는 검색 결과에 표시하지 않습니다.
+서비스 URL 판정 세부 조건과 현재 키의 일일 한도 수치는 계속 미확인입니다.
+127.0.0.1과 localhost는 다른 호스트이며 Pages도 별도 origin입니다. 현재 실패 원인이
+등록 호스트 차이인지는 실제 응답 전까지 확정하지 않습니다. 도메인 변경은 임의로 진행하지 않습니다.
+타일 실패 안내는 누적 실패 수이며, 실제 원인 확정을 위한 타일 요청은 별도 승인이 필요합니다.
+기존 워크플로·Secret은 변경하지 않았고 이번 연결 코드에는 검사·빌드·추가 API 호출·배포를 하지 않았습니다.
+
 ## 로컬 키 설정
 
 1. `.env.example`을 `.env.local`로 복사합니다. 기존 파일이 있으면 덮어쓰지 않습니다.
@@ -51,7 +91,7 @@ Network 캡처·HAR·오류 보고서를 공유할 때 URL에 포함된 키를 �
 ## GitHub Actions 배포 구조
 
 Vite `base`는 `/IMJINHONG/`으로 설정했습니다.
-현재 사용자가 알려준 설정은 main 브랜치 루트 배포입니다.
+1차 배포 시 Pages Source를 GitHub Actions로 전환했음을 확인했습니다.
 Vite 소스 자체는 빌드된 웹사이트가 아니므로 main 루트 배포만으로 이 앱이 실행되지는 않습니다.
 
 워크플로: `.github/workflows/deploy-pages.yml`.
@@ -69,7 +109,7 @@ GitHub 공식 actions/configure-pages@v5, upload-pages-artifact@v3가 dist만 �
 build는 contents:read, deploy는 pages:write와 id-token:write 권한을 사용합니다.
 concurrency로 배포를 직렬화하며 진행 중인 배포를 취소하지 않습니다.
 checkout@v7와 setup-node@v7는 조회한 공식 README 예시를 따릅니다.
-GitHub-hosted runner에서의 실제 실행은 미검증입니다.
+1차 배포에서는 GitHub-hosted runner의 build/deploy 성공을 확인했습니다. 검색 연결 버전은 아직 배포하지 않았습니다.
 
 ## Repository Secret 등록 (사용자 직접 수행)
 
@@ -90,8 +130,8 @@ Secret은 소스에서 값을 분리하지만 최종 브라우저 번들의 키�
 4. 소스·lock 파일·워크플로·문서만 검토해 커밋하고 main으로 push합니다.
 5. Actions의 Deploy GitHub Pages 실행에서 build/deploy 성공을 확인합니다.
 
-현재 사용자가 알려준 Pages 설정은 main 루트 브랜치 배포입니다. 이번에는 설정을 변경하지 않았습니다.
-Secrets 등록·commit·push·워크플로 실행·실제 배포도 수행하지 않았습니다.
+Secret 등록과 Pages Source 설정은 1차 배포에서 완료했습니다.
+이번 검색 연결 작업에서는 Secret·Pages 설정 변경, commit·push·워크플로 실행·배포를 하지 않았습니다.
 
 ## 로컬과 CI의 차이 및 배포 후 점검
 

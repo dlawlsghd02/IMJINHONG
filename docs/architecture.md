@@ -1,5 +1,16 @@
 # 구조와 확장 방법
 
+## 3차 지적 기능 추가 — 미실행 코드
+
+`features/cadastral.ts`가 기존 지도 객체에 경계/선택 레이어와 독립 UI를 추가합니다.
+`services/vworld/cadastral.ts`는 고정 서비스 요청, 허용 속성만 추출, 도형 검증 및 좌표변환을 담당합니다.
+이 지적 어댑터는 OpenLayers Geometry를 사용하지만 지도 객체나 DOM UI를 생성하지 않습니다.
+`cadastralJsonp.ts`는 지적 API 전용 sandbox 전송기이며 기존 `search.ts`는 변경하지 않았습니다.
+`landLedger.ts`/`landPrice.ts`는 서로 다른 응답 봉투를 개별 파싱하고, 미검증 브라우저 전송은 실행하지 않습니다.
+`parcelValidation.ts`는 문자열 PNU, 수치·날짜·중복 처리에 필요한 공통 검증을 제공합니다.
+`MapFeature.mount`에 지적 컨트롤/패널 host를 추가했으며, 기능별 초기화 오류 격리는 유지합니다.
+상세 설계와 활성화 조건은 [parcels.md](parcels.md)를 참고하세요. 아래 과거 개발 기록의 검증 결과는 이번 변경에 대한 검증을 뜻하지 않습니다.
+
 ## 데이터 흐름
 
 `config/env → services/vworld → map/basemaps → map/createMap → ui`
@@ -54,16 +65,56 @@ UI의 '타일 요청 오류 없음'은 전체 지도 내용이나 인증의 유�
 
 각 기능을 `features/addressSearch`, `features/cadastre`, `features/zoning`,
 `features/upload` 등의 독립 폴더로 추가하고 완성된 모듈만 registry에 등록합니다.
-`MapFeature.mount({ map })`는 레이어·이벤트·UI를 구성하고 해제 함수를 반환합니다.
+`MapFeature.mount({ map, searchHost, vworldApiKey })`는 레이어·이벤트·UI를 구성하고 해제 함수를 반환합니다.
 기능별 서비스 요청은 services 아래에 두고, 모듈에서 타일 URL 규칙을 복제하지 않습니다.
 공통 계약을 확장할 필요가 생겼을 때만 UI 슬롯 등의 인자를 추가합니다.
 
 WMS/WFS·지적·용도지역은 API 권한, 데이터 범위, 이용 조건을 검토한 뒤 개발합니다.
 전국 데이터를 한 번에 클라이언트로 다운로드하지 않도록 범위 조회·타일·줌별 표시를 검토합니다.
 SHP ZIP·GeoJSON은 파일 크기와 CRS 검사를 먼저 설계하고 필요하면 Web Worker를 사용합니다.
-현재 검색·레이어 관리 등 미구현 기능의 버튼은 표시하지 않습니다.
+검색은 registry에 등록했습니다. 미구현 레이어 관리 등은 표시하지 않습니다.
 
 ## 검증 상태
 
-파일 내용에 대한 수동 코드 검토만 수행했습니다.
-패키지 설치, TypeScript 검사, 빌드, 실제 API, 터치·키보드·반응형 동작은 미검증입니다.
+### 주소 검색 JSONP 연결 (2026-11-06)
+
+- services/vworld/search.ts: 공식 고정 endpoint, URLSearchParams 인코딩, JSONP callback, 응답 검증.
+- ui/searchPanel.ts: form submit, 공백 방지, textContent로 첫 주소 한 줄 출력. 결과 이벤트는 교체 시 해제.
+- features/addressSearch.ts: 현재 지도 재사용, 세대 번호·AbortSignal로 이전 결과 무효화, 단일 마커 관리.
+- styles/search.css: 헤더 안의 검색창과 한 줄 결과. 목록 스크롤·페이지 이동·접기 UI와 지도 위 결과 오버레이 제거.
+- main.ts/registry.ts/types.ts/layout.ts: 검색 등록·키/호스트 전달. mount 오류는 기본 지도 정리 경로와 분리.
+
+요청마다 고유 식별자·콜백을 생성하고 숨김 iframe의 별도 window에만 콜백을 둡니다.
+iframe은 sandbox=allow-scripts이며 allow-same-origin을 허용하지 않습니다.
+srcdoc 초기화 코드는 nonce, 외부 스크립트는 공식 /req/search 경로로 CSP 제한합니다.
+부모는 message의 source(해당 iframe), origin(null), 채널, 요청 ID를 모두 확인합니다.
+완료·로드 오류·15초 타임아웃·무효화 시 message/abort 리스너와 타이머를 정리하고 iframe을 제거합니다.
+콜백·외부 스크립트는 iframe 문서 수명에 묶여 부모 window에 잔류하지 않습니다.
+즉시 콜백 삭제 후 나중에 응답이 실행되는 부모 window의 ReferenceError 경로와
+무기한 no-op 콜백을 누적하는 방식을 피합니다. 실제 네트워크 취소는 보장하지 않습니다.
+브라우저별 iframe 제거 시 늦은 실행·메시지 무시 동작은 반드시 검증해야 합니다.
+
+OK 응답은 EPSG:4326, ADDRESS 유형, items 배열, record/page의 정수·건수·현재 페이지 정합성을 검사합니다.
+필수 주소·ID 누락과 잘못된 좌표는 전체 페이지를 오류 처리합니다. NOT_FOUND는 빈 결과로 처리합니다.
+건물명은 없으면 생략합니다. ERROR 코드·메시지는 키·URL을 제거하고 길이를 제한합니다.
+원본 예외·요청 URL은 로그하지 않습니다.
+
+선행 실제 2건의 JSON 검증에서 확인한 x=경도, y=위도를 사용합니다. 숫자·범위·CRS 검사 후
+OpenLayers transform으로 EPSG:3857로 변환하고 선택 시 마커 하나만 유지합니다.
+마커는 주소 대표점이며 필지·면적·측량 분석용 위치가 아닙니다.
+새 검색·입력 변경은 이전 결과·마커를 지우고 세대 번호를 증가시킵니다.
+UI 요청은 page=1/size=1이며 첫 항목만 사용합니다. 전체 결과 수로 유일성을 주장하지 않습니다.
+AbortSignal은 논리적 무효화에만 사용하며 fetch 취소와 같지 않습니다.
+해제 시 요청·UI 이벤트·벡터 레이어·소스를 정리합니다. 비동기 요청 오류도 검색 패널에서 처리합니다.
+
+이전 준비 코드의 타입 검사·빌드는 통과했지만 이번 연결 코드에는 재실행하지 않았습니다.
+실제 JSONP·iframe Referrer/인증·CSP·메시지·타임아웃·모바일·기존 지도 회귀는 미검증입니다.
+
+### 타일 오류 정적 조사
+
+타일 실패 수는 시작/재요청 이후 누적값입니다. 성공 이벤트로 실패 수를 지우지 않으므로
+화면의 실패 수가 현재 뷰의 실패 타일 수와 같다고 볼 수 없습니다. main.ts 안내에 누적임을 명시했습니다.
+URL은 WMTS REST z/y/x, Base PNG/위성 JPEG이며, 타일 source와 View 모두 EPSG:3857입니다.
+동일 환경변수 키를 사용하지만 검색 성공만으로 WMTS 인증·서비스 정상 여부가 입증되지는 않습니다.
+실제 실패 응답을 확보하지 않아 네트워크·도메인·줌별 제공 범위·서비스 장애 중 어느 원인인지 미확정입니다.
+엔드포인트·키·줌 설정은 변경하지 않았고 실패를 숨기는 자동 초기화도 추가하지 않았습니다.

@@ -1,4 +1,6 @@
 import type { MapFeature } from './types';
+import { addressSearchFeature } from './addressSearch';
+import { cadastralFeature } from './cadastral';
 
-// 구현된 기능만 등록한다. 검색·지적·용도지역·업로드는 아직 미구현이다.
-export const features: readonly MapFeature[] = [];
+// 지적 기능은 기본 꺼짐이며, 자동 BOX 조회와 상세 속성 전송은 검증 전 비활성이다.
+export const features: readonly MapFeature[] = [addressSearchFeature, cadastralFeature];
