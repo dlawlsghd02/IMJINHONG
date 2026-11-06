@@ -1,9 +1,35 @@
 # 인증키와 배포 안내
 
+## 지적 API 선택적 domain 설정
+
+`VITE_VWORLD_DOMAIN`은 V-World에 실제 등록된 서비스 URL을 전달하는 공개 설정입니다.
+설정이 없거나 공백이면 기존처럼 domain을 생략합니다. 설정 시 HTTP(S) 절대 URL만 허용하며
+사용자명·비밀번호, 프래그먼트(#), 공백을 포함한 값은 요청 전에 거부합니다.
+검증은 지적 요청 시 수행하므로 잘못된 domain 설정이 기본 지도·검색 초기화를 중단하지 않습니다.
+등록 URL은 앞뒤 공백만 제거하고 경로·포트·끝 슬래시를 임의로 바꾸지 않습니다.
+
+로컬에서는 사용자가 `.env.local`에 다음 공개 설정을 추가할 수 있습니다. 기존 키 줄은 유지합니다.
+
+```dotenv
+VITE_VWORLD_DOMAIN=https://dlawlsghd02.github.io/IMJINHONG/
+```
+
+위 값은 사용자가 확인한 기존 등록 URL이며, 실제 키 관리 화면의 값과 일치해야 합니다.
+로컬에서 이 값을 전달한다고 로컬 사용이 자동 허용되는 것은 아닙니다. 변경 후 서버 재시작이 필요합니다.
+이번 코드 작업에서는 `.env.local`이나 실제 등록 URL, 인증키를 변경하지 않았습니다.
+
+Pages는 별도 승인 후 Repository Settings → Secrets and variables → Actions → Variables에서
+`VITE_VWORLD_DOMAIN` Repository Variable을 설정합니다. 키 Secret은 그대로 유지합니다.
+워크플로는 해당 공개 Variable을 빌드 환경으로 전달하며, 미설정이면 생략됩니다.
+Variable 변경만으로 기존 번들은 바뀌지 않으므로 별도 승인된 빌드·배포가 필요합니다.
+domain은 지적 어댑터에만 전달하며 검색·타일, sandbox·CSP·Referer 정책은 변경하지 않습니다.
+자동 BOX 및 토지임야·공시지가 전송도 비활성 상태를 유지합니다.
+domain 추가로 INCORRECT_KEY가 해결되는지는 아직 실제 API·브라우저 검증 전입니다.
+
 ## 3차 지적 기능 배포 전 조건
 
 이번 변경은 코드·문서 작성만 진행했습니다. 테스트·빌드·API 호출·배포는 수행하지 않았습니다.
-기존 `VITE_VWORLD_API_KEY`를 재사용하며 새 Secret이나 환경변수는 추가하지 않습니다.
+기존 `VITE_VWORLD_API_KEY` Secret은 재사용합니다. 이후 추가한 선택적 공개 환경변수는 위 domain 설정을 참고하세요.
 지적 JSONP는 별도 sandbox iframe에서 공식 `/req/data`만 허용합니다. 검색 JSONP의 동작 확인은 지적 API 인증 호환성을 보장하지 않습니다.
 로컬 및 Pages에서 Origin/Referer, CSP, 콜백 실행, 메시지 전달을 별도로 확인해야 합니다.
 자동 BOX 조회는 기본 비활성이고, 토지임야·공시지가 브라우저 전송은 요청 자체를 생성하지 않습니다.

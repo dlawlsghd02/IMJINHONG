@@ -9,5 +9,6 @@ export interface MapFeature {
     parcelControlsHost: HTMLElement;
     parcelPanelHost: HTMLElement;
     vworldApiKey: string;
+    vworldDomain?: string;
   }): () => void;
 }

@@ -105,12 +105,24 @@ export function validateParcelBox(box: number[]): void {
   if (!Number.isFinite(area) || area > parcelConfig.maxAreaSquareMeters) throw new ParcelError('화면 범위가 0.25㎢를 초과합니다. 더 확대하세요.');
 }
 
-export function createCadastralProvider(apiKey: string) {
+export function createCadastralProvider(apiKey: string, configuredDomain?: string) {
   async function request(filter: string, limit: number, signal: AbortSignal) {
     if (!apiKey.trim()) throw new ParcelError('V-World 지적 인증키가 없습니다.');
     const parameters = new URLSearchParams({ service: 'data', version: '2.0', request: 'GetFeature',
       data: 'LP_PA_CBND_BUBUN', key: apiKey.trim(), format: 'json', errorFormat: 'json', crs: 'EPSG:4326',
       geomFilter: filter, geometry: 'true', attribute: 'true', columns: 'pnu,jibun', page: '1', size: String(limit) });
+    const domain = configuredDomain?.trim();
+    if (domain) {
+      // 등록 URL을 유지하도록 검증 후에도 URL.href로 정규화하지 않는다.
+      let valid = false;
+      try {
+        const parsed = new URL(domain);
+        valid = /^https?:\/\//i.test(domain) && (parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+          !!parsed.hostname && !parsed.username && !parsed.password && !parsed.hash && !/\s/.test(domain);
+      } catch { /* 설정값이나 URL을 오류에 포함하지 않는다. */ }
+      if (!valid) throw new ParcelError('VITE_VWORLD_DOMAIN은 사용자 인증정보·프래그먼트가 없는 HTTP(S) URL로 설정하세요.');
+      parameters.set('domain', domain);
+    }
     const payload = await requestCadastralJsonp(parameters, signal);
     if (signal.aborted) throw new DOMException('Invalidated', 'AbortError');
     return parseCadastral(payload, limit);

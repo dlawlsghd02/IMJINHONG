@@ -14,8 +14,8 @@ import type { MapFeature } from './types';
 
 export const cadastralFeature: MapFeature = {
   id: 'cadastral',
-  mount({ map, parcelControlsHost, parcelPanelHost, vworldApiKey }) {
-    const provider = createCadastralProvider(vworldApiKey);
+  mount({ map, parcelControlsHost, parcelPanelHost, vworldApiKey, vworldDomain }) {
+    const provider = createCadastralProvider(vworldApiKey, vworldDomain);
     const boundaries = new VectorSource<ParcelFeature>();
     const selected = new VectorSource<ParcelFeature>();
     const boundaryLayer = new VectorLayer({ source: boundaries,

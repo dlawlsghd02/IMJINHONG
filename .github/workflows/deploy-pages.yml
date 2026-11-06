@@ -30,6 +30,7 @@ jobs:
       - name: Build website
         env:
           VITE_VWORLD_API_KEY: ${{ secrets.VITE_VWORLD_API_KEY }}
+          VITE_VWORLD_DOMAIN: ${{ vars.VITE_VWORLD_DOMAIN }}
         shell: bash
         run: |
           if [[ -z "${VITE_VWORLD_API_KEY//[[:space:]]/}" ]]; then

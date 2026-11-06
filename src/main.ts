@@ -19,7 +19,7 @@ const cleanup: Array<() => void> = [];
 let stage: 'configuration' | 'initialization' = 'configuration';
 
 try {
-  const { vworldApiKey } = readEnvironment();
+  const { vworldApiKey, vworldDomain } = readEnvironment();
   stage = 'initialization';
   const basemaps = createBasemaps(vworldApiKey, ({ id, pending, failures }) => {
     ui.retry.hidden = failures === 0;
@@ -38,7 +38,7 @@ try {
   features.forEach((feature) => {
     try {
       cleanup.push(feature.mount({ map: instance.map, searchHost: ui.searchHost,
-        parcelControlsHost: ui.parcelControlsHost, parcelPanelHost: ui.parcelPanelHost, vworldApiKey }));
+        parcelControlsHost: ui.parcelControlsHost, parcelPanelHost: ui.parcelPanelHost, vworldApiKey, vworldDomain }));
     } catch {
       const notice = document.createElement('p');
       notice.setAttribute('role', 'status');
