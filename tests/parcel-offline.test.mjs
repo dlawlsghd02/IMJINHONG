@@ -249,7 +249,7 @@ const schedulerPlugins = [{
   name: 'offline-box-scheduler', setup(builder) {
     builder.onLoad({ filter: /[/\\]config[/\\]parcel\.ts$/ }, async ({ path }) => {
       const source = await readFile(path, 'utf8');
-      assert.match(source, /autoBoundaryQueryEnabled: import.meta.env.DEV === true && import.meta.env.VITE_CADASTRAL_AUTO_BOX === 'true'/);
+      assert.match(source, /autoBoundaryQueryEnabled: import.meta.env.VITE_CADASTRAL_AUTO_BOX === 'true'/);
       return { loader: 'ts', contents: source.replace(/autoBoundaryQueryEnabled:[^\r\n]+/, 'autoBoundaryQueryEnabled: true,') };
     });
     builder.onLoad({ filter: /[/\\]services[/\\]vworld[/\\]cadastral\.ts$/ }, () => ({ loader: 'ts', resolveDir: root, contents: `
@@ -692,9 +692,9 @@ schedulerTest('캐시 TTL 만료 전 재사용·만료 후 사용자 이벤트�
   assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /캐시/);
   await f.clock.advance(1000); f.fire('moveend'); await f.clock.advance(350); assert.equal(f.boxes.length, 2);
 });
-test('실제 설정 소스는 개발 환경과 명시적 true를 함께 요구', async () => {
+test('실제 설정 소스는 명시적 true를 요구', async () => {
   const source = await readFile(new URL('../src/config/parcel.ts', import.meta.url), 'utf8');
-  assert.match(source, /import.meta.env.DEV === true && import.meta.env.VITE_CADASTRAL_AUTO_BOX === 'true'/);
+  assert.match(source, /autoBoundaryQueryEnabled: import.meta.env.VITE_CADASTRAL_AUTO_BOX === 'true'/);
   assert.equal(api.parcelConfig.autoBoundaryQueryEnabled, false);
   assert.equal(api.parcelConfig.maxAreaSquareMeters, 2_000_000);
   assert.equal(api.parcelConfig.maxFeatures, 1000);
@@ -788,10 +788,11 @@ test('프로덕션에서는 개발 검증 모듈 직접 실행도 차단', async
   assert.equal(api.parcelConfig.maxFeatures, 1000);
 });
 
-test('자동 BOX 활성화 조건: DEV와 정확한 문자열 true를 모두 요구', async () => {
+test('자동 BOX 활성화 조건: 개발·운영 모두 정확한 문자열 true만 허용', async () => {
   for (const [development, value, expected] of [
     [true, 'true', true], [true, undefined, false], [true, 'false', false], [true, 'TRUE', false],
-    [true, ' true ', false], [false, 'true', false], [false, undefined, false],
+    [true, ' true ', false], [false, 'true', true], [false, undefined, false],
+    [false, 'false', false], [false, 'TRUE', false], [false, ' true ', false],
   ]) {
     const module = await bundle(`export { parcelConfig } from './src/config/parcel';`, [], {
       'import.meta.env.DEV': String(development),
