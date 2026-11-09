@@ -1,9 +1,9 @@
 // 공식 API 제한이 아닌 초기 애플리케이션 운영값이다.
 export const parcelConfig = {
   autoBoundaryQueryEnabled: import.meta.env.VITE_CADASTRAL_AUTO_BOX === 'true',
-  pointMinZoom: 17,
+  pointMinZoom: 15,
   boxMinZoom: 15,
-  maxAreaSquareMeters: 2_000_000,
+  maxAreaSquareMeters: 5_000_000,
   maxFeatures: 1_000,
   pointResultLimit: 5,
   moveDelayMs: 350,

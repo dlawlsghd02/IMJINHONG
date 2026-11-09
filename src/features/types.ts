@@ -8,6 +8,7 @@ export interface MapFeature {
     searchHost: HTMLElement;
     parcelControlsHost: HTMLElement;
     parcelPanelHost: HTMLElement;
+    zoningHost: HTMLElement;
     vworldApiKey: string;
     vworldDomain?: string;
   }): () => void;

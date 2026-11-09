@@ -43,29 +43,32 @@ function withClock(run) {
   try { run((value) => { time = value; }); } finally { Date.now = original; }
 }
 
-test('설정: POINT 17 / BOX 15, 자동 BOX false', () => {
-  assert.equal(api.parcelConfig.pointMinZoom, 17); assert.equal(api.parcelConfig.boxMinZoom, 15);
+test('설정: POINT 15 / BOX 15, 자동 BOX false', () => {
+  assert.equal(api.parcelConfig.pointMinZoom, 15); assert.equal(api.parcelConfig.boxMinZoom, 15);
   assert.equal(api.parcelConfig.autoBoundaryQueryEnabled, false);
-  assert.equal(api.parcelConfig.maxAreaSquareMeters, 2_000_000);
+  assert.equal(api.parcelConfig.maxAreaSquareMeters, 5_000_000);
   assert.equal(api.parcelConfig.maxFeatures, 1000);
+  assert.equal(api.parcelConfig.cacheMaxFeatures, 1000);
+  assert.equal(api.parcelConfig.maxBoxCoordinates, 200000);
+  assert.equal(api.parcelConfig.cacheMaxCoordinates, 100000);
 });
 test('작은 BOX 허용 / 넓은 BOX 차단', () => {
   assert.doesNotThrow(() => api.validateParcelBox([126.977, 37.566, 126.978, 37.567]));
-  assert.throws(() => api.validateParcelBox([126.97, 37.56, 126.99, 37.58]), /2㎢/);
+  assert.throws(() => api.validateParcelBox([126.97, 37.56, 127.01, 37.60]), /5㎢/);
 });
-test('2㎢ 구면 면적 경계값 전후', () => {
+test('5㎢ 구면 면적 경계값 전후', () => {
   const south = 37.56, north = 37.565, radians = Math.PI / 180;
-  const width = 2_000_000 / (6_371_008.8 ** 2 * radians * (Math.sin(north * radians) - Math.sin(south * radians)));
+  const width = 5_000_000 / (6_371_008.8 ** 2 * radians * (Math.sin(north * radians) - Math.sin(south * radians)));
   assert.doesNotThrow(() => api.validateParcelBox([126.97, south, 126.97 + width * 0.999, north]));
   assert.throws(() => api.validateParcelBox([126.97, south, 126.97 + width * 1.001, north]));
 });
 test('회전 화면 외접 BOX가 면적 상한을 넘으면 차단', () => {
   const center = api.transform([126.978, 37.566], 'EPSG:4326', 'EPSG:3857');
-  // 서울 부근 지상 1,200m 정사각형: 회전 전 약 1.44㎢, 45도 회전 외접 BOX 약 2.88㎢.
-  const side = 1200 / Math.cos(37.566 * Math.PI / 180);
+  // 서울 부근 지상 1,800m 정사각형: 회전 전 약 3.24㎢, 45도 회전 외접 BOX 약 6.48㎢.
+  const side = 1800 / Math.cos(37.566 * Math.PI / 180);
   const box = (width) => api.transformExtent([center[0] - width / 2, center[1] - width / 2, center[0] + width / 2, center[1] + width / 2], 'EPSG:3857', 'EPSG:4326');
   assert.doesNotThrow(() => api.validateParcelBox(box(side)));
-  assert.throws(() => api.validateParcelBox(box(side * Math.SQRT2)), /2㎢/);
+  assert.throws(() => api.validateParcelBox(box(side * Math.SQRT2)), /5㎢/);
 });
 test('잘못된 BOX: 역전·날짜변경선·무한값 거부', () => {
   for (const box of [[127, 38, 126, 37], [179, 37, -179, 38], [126, 37, Infinity, 38]]) assert.throws(() => api.validateParcelBox(box));
@@ -79,6 +82,47 @@ test('BOX 메타데이터 완전 / PNU 문자열 / 도형 변환', () => {
 test('BOX 일부 반환 감지', () => {
   const result = api.parseCadastral(response({ record: { current: 1, total: 1001 }, page: { current: 1, size: 1000, total: 2 } }), 1000, 'box');
   assert.equal(result.completeness, 'partial'); assert.equal(result.truncated, true);
+});
+
+test('1,000건 요청에 서버 page.size=500 축소 응답은 거부', () => {
+  const value = response({ page: { current: 1, size: 500, total: 1 } });
+  assert.throws(() => api.parseCadastral(value, 1000, 'box'), /모순/);
+});
+
+test('BOX 합산 200,000좌표 초과는 1,000피처 이내여도 거부', () => {
+  const value = response({ record: { current: 3, total: 3 } });
+  const template = value.response.result.featureCollection.features[0];
+  value.response.result.featureCollection.features = Array.from({ length: 3 }, (_, i) => ({
+    ...template, properties: { pnu: String(i).padStart(19, '0') },
+    geometry: { type: 'Polygon', coordinates: [Array.from({ length: 70000 }, () => [126.977, 37.566])] },
+  }));
+  assert.throws(() => api.parseCadastral(value, 1000, 'box'), /좌표 수.*상한/);
+});
+
+test('캐시 1,000피처 허용·1,001피처 거부, 원본 보호', () => {
+  const cache = api.createParcelBoundaryCache(), rows = Array.from({ length: 1000 }, (_, i) => feature(i));
+  cache.put('valid', batch(rows)); assert.equal(cache.get('valid').features.length, 1000);
+  cache.put('oversized', batch([...rows, feature(1000)])); assert.equal(cache.get('oversized'), undefined);
+  assert.equal(cache.get('valid').features.length, 1000);
+});
+
+test('UI 배치: 공통 세로 컨테이너에 지적도 다음 용도지역, 독립 절대위치 제거', async () => {
+  const layout = await readFile(new URL('../src/ui/layout.ts', import.meta.url), 'utf8');
+  const parcelCss = await readFile(new URL('../src/styles/parcel.css', import.meta.url), 'utf8');
+  const zoningCss = await readFile(new URL('../src/styles/zoning.css', import.meta.url), 'utf8');
+  assert.match(layout, /class="layer-controls-stack">\s*<div id="parcel-controls-host"><\/div>\s*<div id="zoning-controls-host"><\/div>/);
+  assert.match(parcelCss, /\.layer-controls-stack\s*\{[^}]*display: flex;[^}]*flex-direction: column/);
+  assert.doesNotMatch(zoningCss, /#zoning-controls-host\s*\{[^}]*position: absolute/);
+});
+
+test('UI 안내: 빈 상태는 숨김, 오류·자료 없음은 표시', () => {
+  const ui = api.createParcelPanel(() => {}, () => {}), status = ui.controls.children[1];
+  ui.setStatus(''); assert.equal(status.hidden, true);
+  for (const value of ['조회 오류', '조회 가능한 필지가 없습니다.']) {
+    ui.setStatus(value); assert.equal(status.hidden, false); assert.equal(status.textContent, value);
+  }
+  ui.setBoundaryStatus('일부 경계만 조회되었습니다.'); assert.equal(ui.controls.children[2].hidden, false);
+  ui.setBoundaryStatus(''); assert.equal(ui.controls.children[2].hidden, true); ui.dispose();
 });
 test('BOX 누락·잘못된 메타데이터는 완전성 미확인', () => {
   for (const overrides of [{ record: undefined, page: undefined }, { record: { current: 'x', total: '1' } }])
@@ -211,10 +255,10 @@ function setupMap() {
 }
 const click = () => ({ pixel: [10, 10], coordinate: api.transform([126.9775, 37.5665], 'EPSG:4326', 'EPSG:3857') });
 const selectionBatch = () => api.parseCadastral(response({ page: { current: 1, size: 5, total: 1 } }), 5);
-test('OFF·줌 17 미만은 POINT 요청 없음, ON만으로 BOX 요청 없음', () => {
+test('OFF·줌 15 미만은 POINT 요청 없음, ON만으로 BOX 요청 없음', () => {
   const ui = setupMap(); ui.fire('singleclick', click()); assert.equal(parcelOfflineMocks.calls.length, 0);
-  ui.toggle(); ui.setZoom(16.999); ui.fire('singleclick', click()); assert.equal(parcelOfflineMocks.calls.length, 0);
-  assert.match(ui.boundaryStatus.textContent, /비활성/); ui.dispose();
+  ui.toggle(); ui.setZoom(14.999); ui.fire('singleclick', click()); assert.equal(parcelOfflineMocks.calls.length, 0);
+  assert.equal(ui.boundaryStatus.textContent, ''); ui.dispose();
 });
 test('POINT 중복 억제, 지도 이동 후 응답·선택·상세 유지, 닫기 정리', async () => {
   const ui = setupMap(); ui.toggle(); ui.setZoom(17); const event = click();
@@ -624,7 +668,7 @@ schedulerTest('진행 중 동일 BOX 요청 중복 억제', async (f) => {
 schedulerTest('완료한 동일 BOX는 네트워크 대신 캐시 재사용', async (f) => {
   f.toggle(); await f.clock.advance(350); f.boxes[0].resolve(batch([feature(1)])); await tick();
   f.fire('movestart'); f.fire('moveend'); await f.clock.advance(350);
-  assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /캐시/);
+  assert.equal(f.boxes.length, 1); assert.equal(f.boundaryStatus.textContent, '');
   assert.equal(f.layers[0].getSource().getFeatures().length, 1);
 });
 schedulerTest('진행 중 이동하면 늦은 이전 BOX 응답 무시', async (f) => {
@@ -691,24 +735,24 @@ for (const completeness of ['partial', 'unknown']) {
 schedulerTest('줌 15 미만은 0회, 줌 15 이상 작은 BOX는 조회 후보', async (f) => {
   f.state.zoom = 14.999; f.toggle(); await f.clock.advance(350); assert.equal(f.boxes.length, 0);
   f.fire('movestart'); f.state.zoom = 15; f.fire('moveend'); await f.clock.advance(350); assert.equal(f.boxes.length, 1);
-  f.fire('singleclick', click()); assert.equal(f.points.length, 0);
+  f.fire('singleclick', click()); assert.equal(f.points.length, 1);
 });
 schedulerTest('BOX 면적 초과는 요청 함수 호출 0회', async (f) => {
   f.state.size = [3000, 3000]; f.state.resolution = 1; f.toggle(); await f.clock.advance(5000);
-  assert.equal(f.boxes.length, 0); assert.match(f.boundaryStatus.textContent, /2㎢/);
+  assert.equal(f.boxes.length, 0); assert.match(f.boundaryStatus.textContent, /5㎢/);
 });
 schedulerTest('회전으로 전송 BOX 면적이 커지면 조건을 재평가해 차단', async (f) => {
-  f.state.size = [2500, 100]; f.state.resolution = 1; f.toggle(); await f.clock.advance(350);
+  f.state.size = [4200, 100]; f.state.resolution = 1; f.toggle(); await f.clock.advance(350);
   assert.equal(f.boxes.length, 1); f.boxes[0].resolve(batch()); await tick();
   f.fire('movestart'); f.state.rotation = Math.PI / 4; f.fire('moveend'); await f.clock.advance(2000);
-  assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /2㎢/);
+  assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /5㎢/);
 });
 schedulerTest('화면 크기 변경은 이전 요청 무효화 및 면적 재평가', async (f) => {
   f.toggle(); await f.clock.advance(350); const old = f.boxes[0];
   f.state.size = [3000, 3000]; f.state.resolution = 1; f.fire('change:size');
   assert.equal(old.signal.aborted, true); old.resolve(batch([feature()])); await tick();
   await f.clock.advance(2000); assert.equal(f.boxes.length, 1); assert.equal(f.layers[0].getSource().getFeatures().length, 0);
-  assert.match(f.boundaryStatus.textContent, /2㎢/);
+  assert.match(f.boundaryStatus.textContent, /5㎢/);
 });
 schedulerTest('화면 확대 수준·범위 축소 후 작은 BOX는 재평가하여 요청', async (f) => {
   f.state.size = [3000, 3000]; f.state.resolution = 1; f.toggle(); await f.clock.advance(350); assert.equal(f.boxes.length, 0);
@@ -718,14 +762,14 @@ schedulerTest('화면 확대 수준·범위 축소 후 작은 BOX는 재평가�
 schedulerTest('캐시 TTL 만료 전 재사용·만료 후 사용자 이벤트로 갱신', async (f) => {
   f.toggle(); await f.clock.advance(350); f.boxes[0].resolve(batch()); await tick();
   await f.clock.advance(59_000); f.fire('moveend'); await f.clock.advance(350);
-  assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /캐시/);
+  assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /필지 경계가 없습니다/);
   await f.clock.advance(1000); f.fire('moveend'); await f.clock.advance(350); assert.equal(f.boxes.length, 2);
 });
 test('실제 설정 소스는 명시적 true를 요구', async () => {
   const source = await readFile(new URL('../src/config/parcel.ts', import.meta.url), 'utf8');
   assert.match(source, /autoBoundaryQueryEnabled: import.meta.env.VITE_CADASTRAL_AUTO_BOX === 'true'/);
   assert.equal(api.parcelConfig.autoBoundaryQueryEnabled, false);
-  assert.equal(api.parcelConfig.maxAreaSquareMeters, 2_000_000);
+  assert.equal(api.parcelConfig.maxAreaSquareMeters, 5_000_000);
   assert.equal(api.parcelConfig.maxFeatures, 1000);
 });
 
@@ -813,7 +857,7 @@ test('프로덕션에서는 개발 검증 모듈 직접 실행도 차단', async
   resetManual(); const module = await manualModule(false, true);
   await assert.rejects(() => module.runManualBoxOnce(smallManualBox, 'BOX_MANUAL_ONCE'), /개발 환경/);
   assert.equal(manualBoxMocks.calls.length, 0); assert.equal(api.parcelConfig.autoBoundaryQueryEnabled, false);
-  assert.equal(api.parcelConfig.maxAreaSquareMeters, 2_000_000);
+  assert.equal(api.parcelConfig.maxAreaSquareMeters, 5_000_000);
   assert.equal(api.parcelConfig.maxFeatures, 1000);
 });
 
@@ -861,14 +905,14 @@ developmentTest('개발 자동 BOX: 실패는 자동 재시도하지 않되 사�
 });
 developmentTest('개발 자동 BOX: 면적 사전 차단 후 작은 범위로 이동하면 조회 허용', async (f) => {
   f.state.size = [3000, 3000]; f.state.resolution = 1; f.toggle(); await f.clock.advance(350);
-  assert.equal(f.boxes.length, 0); assert.match(f.boundaryStatus.textContent, /2㎢/);
+  assert.equal(f.boxes.length, 0); assert.match(f.boundaryStatus.textContent, /5㎢/);
   f.fire('movestart'); f.state.resolution = 0.1; f.fire('moveend'); await f.clock.advance(350);
   assert.equal(f.boxes.length, 1);
 });
 developmentTest('개발 자동 BOX: 캐시 재사용은 무전송, TTL 만료 후 필요한 조회 허용', async (f) => {
   f.toggle(); await f.clock.advance(350); f.boxes[0].resolve(batch([feature()])); await tick();
   f.fire('movestart'); f.fire('moveend'); await f.clock.advance(350);
-  assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /캐시/);
+  assert.equal(f.boxes.length, 1); assert.equal(f.boundaryStatus.textContent, '');
   await f.clock.advance(60_000); f.fire('moveend'); await f.clock.advance(350);
   assert.equal(f.boxes.length, 2);
 });
@@ -902,7 +946,7 @@ developmentTest('ON/OFF: 유효 캐시는 다시 ON 즉시 재표시하고 추�
   f.toggle(); assert.equal(f.layers[0].getVisible(), false);
   f.toggle(); assert.equal(f.layers[0].getVisible(), true);
   assert.equal(f.layers[0].getSource().getFeatures().length, 2);
-  assert.match(f.boundaryStatus.textContent, /캐시/);
+  assert.equal(f.boundaryStatus.textContent, '');
   await f.clock.advance(5000); assert.equal(f.boxes.length, 1); assert.equal(f.layers.length, 2);
 });
 developmentTest('ON/OFF: 기존 POINT 선택·패널·상태는 숨겼다가 복원', async (f) => {
@@ -919,7 +963,7 @@ developmentTest('ON/OFF: 캐시 만료 시 예전 경계를 재표시하지 않�
   f.toggle(); await f.clock.advance(350); f.boxes[0].resolve(batch([feature()])); await tick();
   f.toggle(); await f.clock.advance(60_000); f.toggle(); await f.clock.advance(350);
   assert.equal(f.layers[0].getSource().getFeatures().length, 0); assert.equal(f.boxes.length, 2);
-  assert.match(f.boundaryStatus.textContent, /조회 중/);
+  assert.equal(f.boundaryStatus.textContent, '');
   f.boxes[1].resolve(batch([feature(2)])); await tick();
   assert.equal(f.layers[0].getSource().getFeatures()[0].getId(), '2');
 });

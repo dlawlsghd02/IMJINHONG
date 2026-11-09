@@ -18,7 +18,7 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
   const status = document.createElement('p');
   status.setAttribute('role', 'status');
   status.setAttribute('aria-live', 'polite');
-  status.textContent = '지적도 꺼짐';
+  status.hidden = true;
   const boundaryStatus = document.createElement('p');
   boundaryStatus.setAttribute('role', 'status');
   boundaryStatus.setAttribute('aria-live', 'polite');
@@ -69,10 +69,10 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
       toggle.setAttribute('aria-pressed', String(enabled));
     },
     setFeatureVisible(visible: boolean, hasSelection: boolean) {
-      status.hidden = !visible;
+      status.hidden = !visible || !status.textContent;
       panel.hidden = !visible || !hasSelection;
     },
-    setStatus(value: string, busy = false) { status.textContent = value; status.setAttribute('aria-busy', String(busy)); },
+    setStatus(value: string, busy = false) { status.textContent = value; status.hidden = !value; status.setAttribute('aria-busy', String(busy)); },
     setBoundaryStatus(value: string, busy = false) {
       boundaryStatus.textContent = value; boundaryStatus.hidden = !value;
       boundaryStatus.setAttribute('aria-busy', String(busy));

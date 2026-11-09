@@ -1,0 +1,26 @@
+#zoning-controls-host { width: 100%; pointer-events: none; }
+.zoning-controls { pointer-events: auto; color: #0F172A; }
+.zoning-controls button { min-height: 44px; padding: 10px 14px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #0f172a0a; font-weight: 600; }
+.zoning-controls button[aria-pressed="true"] { background: #2563EB; border-color: #2563EB; color: #fff; }
+.zoning-controls fieldset { margin: 8px 0 0; padding: 10px 12px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fff; max-height: min(34vh, 260px); max-height: min(34dvh, 260px); overflow: auto; }
+.zoning-controls legend { background: #fff; border-radius: 4px; padding: 2px 4px; font-size: 12px; color: #64748B; }
+.zoning-controls label { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 13px; cursor: pointer; }
+.zoning-controls .zoning-visibility { display: none; }
+.zoning-controls input { accent-color: #2563EB; }
+.zoning-controls input[type="checkbox"] { width: 18px; height: 18px; }
+.zoning-controls .zoning-opacity { display: grid; gap: 2px; padding-top: 8px; border-top: 1px solid #E2E8F0; }
+.zoning-opacity input { width: 100%; min-height: 32px; }
+.zoning-controls p { padding: 8px 10px; margin: 6px 0 0; background: #fffffff2; border-radius: 8px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .map-shell:has(.parcel-panel:not([hidden])) #zoning-controls-host { visibility: hidden; }
+  .zoning-controls button { padding: 6px 10px; min-height: 44px; font-size: 12px; border-radius: 9px; }
+  .zoning-controls fieldset { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2px 6px; min-width: 0; width: 100%; margin-top: 6px; padding: 6px 8px; max-height: min(38vh, 260px); max-height: min(38dvh, 260px); }
+  .zoning-controls legend { font-size: 11px; }
+  .zoning-controls label { gap: 5px; min-width: 0; min-height: 44px; font-size: 12px; line-height: 1.35; }
+  .zoning-controls label span { min-width: 0; overflow-wrap: anywhere; }
+  .zoning-controls input[type="checkbox"] { flex-shrink: 0; width: 18px; height: 18px; }
+  .zoning-controls .zoning-visibility { display: flex; grid-column: 1 / -1; border-bottom: 1px solid #E2E8F0; }
+  .zoning-controls .zoning-opacity { grid-column: 1 / -1; padding-top: 5px; }
+  .zoning-controls p { padding: 5px 7px; font-size: 11px; }
+}
+@media (max-height: 500px) { .zoning-controls fieldset { max-height: 24dvh; } }

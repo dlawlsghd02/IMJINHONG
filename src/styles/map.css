@@ -17,3 +17,9 @@
   .zoom-controls { top: 10px; right: max(10px, env(safe-area-inset-right)); }
   .status-panel { left: 10px; max-width: calc(100% - 20px); bottom: 32px; font-size: 11px; }
 }
+@media (max-width: 900px) {
+  .zoom-controls { gap: 2px; padding: 2px; border-radius: 8px; }
+  .zoom-controls button { min-width: 44px; min-height: 44px; padding: 2px 6px; font-size: 20px; }
+  .status-panel:has(#map-status[data-state="normal"]):not(:has(.feature-init-warning)) { display: none; }
+  .status-panel { max-height: 22dvh; overflow: auto; }
+}

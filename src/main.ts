@@ -3,6 +3,7 @@ import './styles/base.css';
 import './styles/map.css';
 import './styles/search.css';
 import './styles/parcel.css';
+import './styles/zoning.css';
 import { readEnvironment } from './config/env';
 import { createBasemaps } from './map/basemaps';
 import { createMap } from './map/createMap';
@@ -17,6 +18,7 @@ if (!root) throw new Error('앱 컨테이너가 없습니다.');
 const ui = createLayout(root);
 const cleanup: Array<() => void> = [];
 let stage: 'configuration' | 'initialization' = 'configuration';
+ui.status.dataset.state = 'normal';
 
 try {
   const { vworldApiKey, vworldDomain } = readEnvironment();
@@ -38,9 +40,10 @@ try {
   features.forEach((feature) => {
     try {
       cleanup.push(feature.mount({ map: instance.map, searchHost: ui.searchHost,
-        parcelControlsHost: ui.parcelControlsHost, parcelPanelHost: ui.parcelPanelHost, vworldApiKey, vworldDomain }));
+        parcelControlsHost: ui.parcelControlsHost, parcelPanelHost: ui.parcelPanelHost, zoningHost: ui.zoningHost, vworldApiKey, vworldDomain }));
     } catch {
       const notice = document.createElement('p');
+      notice.className = 'feature-init-warning';
       notice.setAttribute('role', 'status');
       notice.textContent = '추가 기능 초기화에 실패했습니다. 기본 지도는 계속 사용할 수 있습니다.';
       ui.status.parentElement?.append(notice);

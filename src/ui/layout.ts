@@ -16,7 +16,10 @@ export function createLayout(root: HTMLElement) {
           <button type="button" data-zoom="1" aria-label="지도 확대" disabled>+</button>
           <button type="button" data-zoom="-1" aria-label="지도 축소" disabled>−</button>
         </div>
-        <div id="parcel-controls-host"></div>
+        <div class="layer-controls-stack">
+          <div id="parcel-controls-host"></div>
+          <div id="zoning-controls-host"></div>
+        </div>
         <div id="parcel-panel-host"></div>
         <section class="status-panel" aria-label="지도 상태">
           <p id="map-status" role="status" aria-live="polite">지도 설정 확인 중…</p>
@@ -39,6 +42,7 @@ export function createLayout(root: HTMLElement) {
     searchHost: get<HTMLDivElement>('#address-search-host'),
     parcelControlsHost: get<HTMLDivElement>('#parcel-controls-host'),
     parcelPanelHost: get<HTMLDivElement>('#parcel-panel-host'),
+    zoningHost: get<HTMLDivElement>('#zoning-controls-host'),
     status: get<HTMLParagraphElement>('#map-status'),
     retry: get<HTMLButtonElement>('#retry-tiles'),
     basis: get<HTMLSpanElement>('#coordinate-basis'),

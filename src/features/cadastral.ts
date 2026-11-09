@@ -31,7 +31,6 @@ export const cadastralFeature: MapFeature = {
     let lastBoxRequestAt = -Infinity;
     let lastSettledBox = '', lastSettledMessage = '';
     let lastSettledExpiresAt = Infinity;
-    let lastDisplayedBox = '';
     const cache = createParcelBoundaryCache();
     let pointController: AbortController | undefined, boxController: AbortController | undefined;
     let attributesPending: { ledger: boolean; price: boolean } | undefined;
@@ -57,9 +56,8 @@ export const cadastralFeature: MapFeature = {
       if (enabled) ready();
     }
     function ready() {
-      if (!enabled) panel.setStatus('지적도 꺼짐');
-      else if ((map.getView().getZoom() ?? 0) < parcelConfig.pointMinZoom) panel.setStatus('17단계 이상 확대 후 지도를 눌러 필지를 조회하세요.');
-      else panel.setStatus('지도를 눌러 1필지를 조회하세요.');
+      if (enabled && (map.getView().getZoom() ?? 0) < parcelConfig.pointMinZoom) panel.setStatus(`${parcelConfig.pointMinZoom}단계 이상 확대 후 필지를 선택하세요.`);
+      else panel.setStatus('');
     }
     function toggle() {
       enabled = !enabled;
@@ -69,7 +67,7 @@ export const cadastralFeature: MapFeature = {
       if (canceledAttributes && (canceledAttributes.ledger || canceledAttributes.price) && selected.getFeatures().length) {
         if (canceledAttributes.ledger) panel.renderLedger({ status: 'error', message: '지적도 전환으로 조회가 취소되었습니다. 다시 필지를 선택하세요.' });
         if (canceledAttributes.price) panel.renderPrice({ status: 'error', message: '지적도 전환으로 조회가 취소되었습니다. 다시 필지를 선택하세요.' });
-        panel.setStatus('선택 필지 유지. 진행 중이던 속성 조회는 취소했습니다.');
+        panel.setStatus('진행 중이던 조회가 취소되었습니다. 다시 필지를 선택하세요.');
       }
       if (pointWasPending && !selected.getFeatures().length) pointStatusLocked = false;
       boundaryLayer.setVisible(enabled); selectionLayer.setVisible(enabled);
@@ -109,7 +107,7 @@ export const cadastralFeature: MapFeature = {
       ]);
       if (!current()) return;
       attributesPending = undefined;
-      panel.setStatus('필지 선택 완료. 토지정보와 공시지가 조회 결과를 확인하세요.');
+      panel.setStatus('');
     }
     async function selectAt(coordinate: number[]) {
       if (disposed || !enabled || (map.getView().getZoom() ?? 0) < parcelConfig.pointMinZoom) { ready(); return; }
@@ -140,13 +138,12 @@ export const cadastralFeature: MapFeature = {
     const boundaryStatus = (message: string, busy = false) => {
       panel.setBoundaryStatus(message, busy);
     };
-    function displayBoundaries(batch: ParcelBatch, cached: boolean, key: string) {
+    function displayBoundaries(batch: ParcelBatch) {
       boundaries.clear(); boundaries.addFeatures(batch.features);
-      lastDisplayedBox = key;
-      const prefix = cached ? '경계 캐시 사용. ' : '';
-      if (batch.completeness === 'partial') boundaryStatus(`${prefix}일부 경계 ${batch.features.length}건만 표시 중입니다. 더 확대하세요. 추가 페이지는 조회하지 않습니다.`);
-      else if (batch.completeness === 'unknown') boundaryStatus(`${prefix}경계 ${batch.features.length}건. 응답 메타데이터가 불명확해 완전성은 미확인입니다.`);
-      else boundaryStatus(`${prefix}현재 BOX 경계 ${batch.features.length}건. 응답 메타데이터 기준 전체 반환입니다.`);
+      if (batch.completeness === 'partial') boundaryStatus(`일부 경계 ${batch.features.length}건만 표시 중입니다. 더 확대하세요.`);
+      else if (batch.completeness === 'unknown') boundaryStatus('전체 경계 조회 여부는 미확인입니다.');
+      else if (!batch.features.length) boundaryStatus('조회 가능한 필지 경계가 없습니다.');
+      else boundaryStatus('');
     }
     function restoreCachedBoundaries(): boolean {
       if (!parcelConfig.autoBoundaryQueryEnabled || (map.getView().getZoom() ?? 0) < parcelConfig.boxMinZoom ||
@@ -159,7 +156,7 @@ export const cadastralFeature: MapFeature = {
         const key = `LP_PA_CBND_BUBUN|EPSG:4326|1|${parcelConfig.maxFeatures}|${box.join(',')}`;
         const cached = cache.get(key);
         if (!cached) return false;
-        displayBoundaries(cached, true, key);
+        displayBoundaries(cached);
         return true;
       } catch { return false; } // 기존 예약 처리에서 안전한 범위 오류를 표시한다.
     }
@@ -180,23 +177,20 @@ export const cadastralFeature: MapFeature = {
         key = `LP_PA_CBND_BUBUN|EPSG:4326|1|${parcelConfig.maxFeatures}|${box.join(',')}`;
         if (pendingBox === key || boxController) return;
         const cached = cache.get(key);
-        if (cached) { displayBoundaries(cached, true, key); return; }
-        const missingCache = lastDisplayedBox
-          ? lastDisplayedBox === key ? '이전 경계 데이터의 캐시가 만료됐거나 저장 대상이 아닙니다.' : '현재 범위가 이전 경계 데이터의 조회 범위와 다릅니다.'
-          : '현재 범위의 유효한 경계 캐시가 없습니다.';
+        if (cached) { displayBoundaries(cached); return; }
         // 완료·실패한 동일 범위에 대한 자동 재시도는 하지 않는다.
         if (lastSettledBox === key && Date.now() < lastSettledExpiresAt) {
-          boundaryStatus(`${missingCache} 이전 경계는 표시하지 않습니다. 동일 범위 추가 요청을 생략했습니다. ${lastSettledMessage}`); return;
+          boundaryStatus(lastSettledMessage); return;
         }
         const wait = parcelConfig.minBoxRequestIntervalMs - (performance.now() - lastBoxRequestAt);
         if (wait > 0) {
-          boundaryStatus('경계 요청 간격 대기 중…');
+          boundaryStatus('');
           timer = setTimeout(() => { timer = undefined; if (token === boxGeneration) void refreshBoundaries(); }, wait);
           return;
         }
         controller = new AbortController(); boxController = controller; pendingBox = key;
         lastBoxRequestAt = performance.now();
-        boundaryStatus('화면 범위 지적 경계 조회 중…', true);
+        boundaryStatus('', true);
         const batch = await provider.box(box, controller.signal);
         if (disposed || !enabled || token !== boxGeneration || controller.signal.aborted) return;
         const currentSize = map.getSize();
@@ -205,10 +199,10 @@ export const cadastralFeature: MapFeature = {
         if (currentBox.join(',') !== box.join(',')) return;
         lastSettledBox = key;
         lastSettledExpiresAt = batch.completeness === 'complete' ? Date.now() + parcelConfig.cacheTtlMs : Infinity;
-        lastSettledMessage = batch.completeness === 'complete' ? '이전 완전 응답은 재사용 가능한 캐시에 없습니다. TTL 이후 조회할 수 있습니다.' :
+        lastSettledMessage = batch.completeness === 'complete' ? (!batch.features.length ? '조회 가능한 필지 경계가 없습니다.' : '') :
           batch.completeness === 'partial' ? '이전 응답은 일부 반환이었습니다. 더 확대하세요.' : '이전 응답은 완전성 미확인이었습니다. 더 확대하세요.';
         cache.put(key, batch);
-        displayBoundaries(batch, false, key);
+        displayBoundaries(batch);
       } catch (error) {
         if (!disposed && token === boxGeneration && !controller?.signal.aborted) {
           const message = error instanceof ParcelError ? error.message : '화면 범위 경계를 조회하지 못했습니다.';
@@ -224,15 +218,15 @@ export const cadastralFeature: MapFeature = {
       timer = undefined;
       if (!pointStatusLocked && !pointController && !selected.getFeatures().length) ready();
       if (disposed || !enabled) return;
-      if (!parcelConfig.autoBoundaryQueryEnabled) { panel.setBoundaryStatus('자동 BOX 경계 조회는 실제 검증 전 비활성입니다.'); return; }
-      boundaryStatus('지도 이동 종료 후 경계 조회 대기 중…');
+      if (!parcelConfig.autoBoundaryQueryEnabled) { panel.setBoundaryStatus(''); return; }
+      boundaryStatus('');
       timer = setTimeout(() => { timer = undefined; void refreshBoundaries(); }, parcelConfig.moveDelayMs);
     }
     const events = [
       map.on('movestart', () => {
         // POINT는 클릭 위치에 연결되므로 지도 이동만으로 선택·응답을 지우지 않는다.
         invalidateBox(); boundaries.clear();
-        if (enabled && parcelConfig.autoBoundaryQueryEnabled) boundaryStatus('지도 이동 중에는 경계 조회를 중단합니다.');
+        if (enabled && parcelConfig.autoBoundaryQueryEnabled) boundaryStatus('');
       }),
       map.on('moveend', scheduleBoundaries),
       map.on('change:size', () => {
