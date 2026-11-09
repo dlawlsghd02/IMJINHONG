@@ -1,15 +1,15 @@
-.map-shell { flex: 1; min-height: 0; position: relative; background: #dbe7e5; }
+.map-shell { flex: 1; min-height: 0; position: relative; background: #F8FAFC; }
 #map { width: 100%; height: 100%; }
-.basemap-controls, .zoom-controls { position: absolute; z-index: 2; display: flex; gap: 4px; padding: 4px; background: #fff; border: 1px solid #cbdad6; border-radius: 10px; box-shadow: 0 3px 12px #153c4320; }
+.basemap-controls, .zoom-controls { position: absolute; z-index: 2; display: flex; gap: 4px; padding: 4px; background: #fff; border: 1px solid #E2E8F0; border-radius: 10px; box-shadow: 0 3px 12px #0f172a0a; }
 .basemap-controls { top: 16px; left: max(16px, env(safe-area-inset-left)); }
 .zoom-controls { top: 16px; right: max(16px, env(safe-area-inset-right)); flex-direction: column; }
-.basemap-controls button, .zoom-controls button { min-height: 44px; min-width: 44px; border: 0; border-radius: 6px; background: #f0f5f3; padding: 8px 13px; }
-.basemap-controls button[aria-pressed="true"] { background: #17685f; color: white; }
+.basemap-controls button, .zoom-controls button { min-height: 44px; min-width: 44px; border: 0; border-radius: 6px; background: #F8FAFC; padding: 8px 13px; }
+.basemap-controls button[aria-pressed="true"] { background: #2563EB; color: white; }
 .zoom-controls button { font-size: 24px; }
-.status-panel { position: absolute; z-index: 2; bottom: 38px; left: max(16px, env(safe-area-inset-left)); width: fit-content; max-width: min(460px, calc(100% - 32px)); background: #fffffff2; border: 1px solid #d2dedb; border-radius: 8px; padding: 9px 12px; font-size: 12px; box-shadow: 0 2px 10px #153c4310; }
+.status-panel { position: absolute; z-index: 2; bottom: 38px; left: max(16px, env(safe-area-inset-left)); width: fit-content; max-width: min(460px, calc(100% - 32px)); background: #fffffff2; border: 1px solid #E2E8F0; border-radius: 8px; padding: 9px 12px; font-size: 12px; box-shadow: 0 2px 10px #0f172a0a; }
 #map-status { margin: 0; overflow-wrap: anywhere; }
 #map-status[data-state="error"] { color: #943d21; }
-#retry-tiles { margin-top: 8px; padding: 8px 12px; min-height: 44px; border: 1px solid #b9ceca; border-radius: 5px; background: white; }
+#retry-tiles { margin-top: 8px; padding: 8px 12px; min-height: 44px; border: 1px solid #E2E8F0; border-radius: 5px; background: white; }
 .ol-attribution { max-width: calc(100% - 16px); font-size: 11px; }
 @media (max-width: 640px) {
   .basemap-controls { top: 10px; left: max(10px, env(safe-area-inset-left)); }

@@ -298,7 +298,7 @@ const attributesModule = await bundle(`export { cadastralFeature } from './src/f
 ]);
 
 const panelText = (node) => [node.textContent, ...node.children.map(panelText)].join(' ');
-const byClass = (node, name) => [ ...(node.className === name ? [node] : []), ...node.children.flatMap((child) => byClass(child, name)) ];
+const byClass = (node, name) => [ ...((node.className ?? '').split(/\s+/).includes(name) ? [node] : []), ...node.children.flatMap((child) => byClass(child, name)) ];
 const ledgerPayload = (pnuValue = id, area = '944.2') => ({ ladfrlVOList: { totalCount: '1', field: [{ pnu: pnuValue, lndcgrCode: '08', lndcgrCodeNm: '대', lndpclAr: area, lastUpdtDt: '2026-02-05' }] } });
 const pricesPayload = (pnuValue = id) => ({ indvdLandPrices: { totalCount: '2', numOfRows: '10', pageNo: '1', field:
   ['2025-06-18', '2026-02-05'].map((lastUpdtDt) => ({ pnu: pnuValue, stdrYear: '2025', stdrMt: '01', pblntfPclnd: '5714000', pblntfDe: '2025-04-30', lastUpdtDt })) } });
@@ -323,8 +323,8 @@ test('지도 선택: POINT 성공 이후만 속성 2회, 토지임야 먼저 표
     price.resolve(pricesPayload()); await tick();
     const content = panelText(f.panel);
     assert.equal(byClass(f.panel, 'parcel-price-card').length, 1);
-    assert.equal((panelText(byClass(f.panel, 'parcel-data-details')[0]).match(/5,714,000/g) ?? []).length, 2);
-    assert.match(content, /2025-06-18/); assert.match(content, /2026-02-05/); assert.match(content, /최신 가용 개별공시지가/);
+    assert.equal(byClass(f.panel, 'parcel-data-details').length, 0);
+    assert.match(content, /5,714,000/); assert.match(content, /최신 가용 개별공시지가/);
     f.fire('movestart'); f.fire('moveend'); await f.clock.advance(2000);
     assert.equal(selectedAttributeMocks.calls.length, 2); assert.match(panelText(f.panel), /944.2/);
   } finally { f.finish(); }
@@ -333,7 +333,7 @@ test('지도 선택: POINT 성공 이후만 속성 2회, 토지임야 먼저 표
 const uiPriceBatch = (changes = {}) => ({ records: ['2025-06-18', '2026-02-05'].map((updatedAt) => ({
   pnu: id, year: '2025', month: '01', pricePerSquareMeter: 415200, publishedAt: '2025-04-30', updatedAt,
 })), returnedCount: 2, totalCount: 2, pageSize: 10, pageNo: 1, completeness: 'complete', duplicatesRemoved: 0, fields: [], ...changes });
-test('패널 UI: 지번 강조·작은 PNU·2열 카드·접힌 자료 상세', () => {
+test('패널 UI: 지번 강조·작은 PNU·2열 카드·자료 상세 제거', () => {
   const ui = api.createParcelPanel(() => {}, () => {});
   ui.showSelection('1120011300105280006', '528-6', '2025');
   ui.renderLedger({ status: 'ok', value: { pnu: '1120011300105280006', landCategoryCode: '23', landCategoryName: '공원', registeredArea: 2659.7, updatedAt: '2026-02-05' } });
@@ -341,19 +341,18 @@ test('패널 UI: 지번 강조·작은 PNU·2열 카드·접힌 자료 상세', 
   assert.match(byClass(ui.panel, 'parcel-pnu')[0].textContent, /1120011300105280006/);
   const cards = byClass(ui.panel, 'parcel-facts')[0]; assert.equal(cards.children.length, 2);
   assert.match(panelText(cards), /공원/); assert.match(panelText(cards), /2,659.7 ㎡/);
-  const details = byClass(ui.panel, 'parcel-data-details')[0]; assert.equal(details.open, false);
-  assert.equal(details.children[0].textContent, '자료 상세'); assert.match(panelText(details), /국토교통부/);
+  assert.equal(byClass(ui.panel, 'parcel-data-details').length, 0);
+  assert.equal(panelText(ui.panel).includes('자료 상세'), false);
   ui.dispose();
 });
-test('패널 UI: 갱신일만 다른 가격은 한 개 요약, 상세에는 원본 2건 보존', () => {
+test('패널 UI: 갱신일만 다른 가격은 한 개 요약, 입력 원본 2건 보존', () => {
   const ui = api.createParcelPanel(() => {}, () => {}); ui.showSelection(id, '528-6', '2025');
   const batch = uiPriceBatch(), original = JSON.stringify(batch);
   ui.renderPrice({ status: 'ok', value: batch });
   const cards = byClass(ui.panel, 'parcel-price-card'); assert.equal(cards.length, 1);
   assert.match(panelText(cards[0]), /415,200 원\/㎡/); assert.match(panelText(cards[0]), /2025년 기준/); assert.equal(panelText(cards[0]).includes('01월'), false);
-  const detailsText = panelText(byClass(ui.panel, 'parcel-data-details')[0]);
-  assert.match(detailsText, /원본 반환 2건/); assert.match(detailsText, /2025-06-18/); assert.match(detailsText, /2026-02-05/);
-  assert.equal((detailsText.match(/415,200/g) ?? []).length, 2); assert.equal(JSON.stringify(batch), original);
+  assert.equal(byClass(ui.panel, 'parcel-data-details').length, 0);
+  assert.equal(batch.records.length, 2); assert.equal(JSON.stringify(batch), original);
   assert.equal(panelText(ui.panel).includes('연도별 이력'), false); ui.dispose();
 });
 
@@ -363,6 +362,36 @@ function renderHistoryUi(batch) {
     pagesLoaded: 1, expectedPages: 1, warning: null, statistics: api.priceStatistics(batch.records, true) });
   return ui;
 }
+
+test('모던 UI: 레이어 토글의 상태·접근성·기존 콜백 유지', () => {
+  let toggles = 0, closes = 0;
+  const ui = api.createParcelPanel(() => toggles++, () => closes++);
+  const button = ui.controls.children[0];
+  assert.equal(button.attributes.get('aria-pressed'), 'false');
+  assert.equal(byClass(ui.controls, 'parcel-layer-icon')[0].attributes.get('aria-hidden'), 'true');
+  assert.equal(byClass(ui.controls, 'parcel-toggle-state')[0].textContent, 'OFF');
+  ui.setEnabled(true);
+  assert.equal(button.attributes.get('aria-pressed'), 'true');
+  assert.equal(button.attributes.get('aria-label'), '지적도 끄기');
+  assert.equal(byClass(ui.controls, 'parcel-toggle-state')[0].textContent, 'ON');
+  button.click(); ui.panel.children[0].children[1].click();
+  assert.equal(toggles, 1); assert.equal(closes, 1);
+  ui.setEnabled(false); assert.equal(byClass(ui.controls, 'parcel-toggle-state')[0].textContent, 'OFF');
+  ui.dispose();
+});
+
+for (const [price, expected, rate] of [[436000, 'price-rise', '+5.01%'], [400000, 'price-fall', '-3.66%'], [415200, 'price-steady', '0.00%']]) {
+  test(`모던 UI: 증감률 ${rate} 표시 색상 구분·원본 유지`, () => {
+    const batch = uiPriceBatch(); batch.records.push({ ...batch.records[0], year: '2026', pricePerSquareMeter: price });
+    const original = JSON.stringify(batch), ui = renderHistoryUi(batch);
+    const change = byClass(ui.panel, 'parcel-price-change')[0];
+    assert.ok(change.className.includes(expected)); assert.match(change.textContent, new RegExp(rate.replace(/[+.%]/g, '\\$&')));
+    assert.ok(byClass(ui.panel, expected).length >= 2);
+    assert.equal(JSON.stringify(batch), original);
+    assert.equal(byClass(ui.panel, 'parcel-price-history')[0].hidden, false);
+    ui.dispose();
+  });
+}
 test('공시지가 UI: 일반 요약·이력에서 기준월만 숨기고 연도·가격·증감률·공시일 유지', () => {
   const batch = uiPriceBatch(); batch.records.push({ ...batch.records[0], year: '2026', pricePerSquareMeter: 436000, publishedAt: '2026-04-30' });
   const original = JSON.stringify(batch); const ui = renderHistoryUi(batch);
@@ -370,7 +399,7 @@ test('공시지가 UI: 일반 요약·이력에서 기준월만 숨기고 연도
   for (const content of [summary, table]) {
     assert.equal(content.includes('01월'), false); assert.match(content, /2026/); assert.match(content, /436,000/); assert.match(content, /\+5.01%/); assert.match(content, /2026-04-30/);
   }
-  assert.match(panelText(byClass(ui.panel, 'parcel-data-details')[0]), /2025년 01월/);
+  assert.equal(batch.records[0].month, '01');
   assert.equal(JSON.stringify(batch), original); ui.dispose();
 });
 test('공시지가 UI: 같은 연도에 다른 기준월이 있으면 요약·이력에 구분 표시', () => {
@@ -405,9 +434,9 @@ test('패널 UI: 부분·불명확 응답 경고는 접힌 상세 밖에 유지'
 test('패널 UI: 새 선택·닫기 시 상세 초기화, API 문자열은 텍스트로 표시', () => {
   const ui = api.createParcelPanel(() => {}, () => {}); ui.showSelection(id, '<img src=x onerror=alert(1)>', '2025');
   assert.equal(byClass(ui.panel, 'parcel-lot-number')[0].textContent, '<img src=x onerror=alert(1)>');
-  ui.renderPrice({ status: 'ok', value: uiPriceBatch() }); const details = byClass(ui.panel, 'parcel-data-details')[0]; details.open = true;
-  ui.showSelection(id, '새 필지', '2025'); assert.equal(details.open, false); assert.equal(panelText(details).includes('415,200'), false);
-  ui.clear(); assert.equal(ui.panel.hidden, true); assert.equal(panelText(details).includes('2025-06-18'), false); ui.dispose();
+  ui.renderPrice({ status: 'ok', value: uiPriceBatch() });
+  ui.showSelection(id, '새 필지', '2025'); assert.equal(panelText(ui.panel).includes('415,200'), false);
+  ui.clear(); assert.equal(ui.panel.hidden, true); assert.equal(panelText(ui.panel).includes('2025-06-18'), false); ui.dispose();
 });
 for (const failure of ['ledger', 'price']) {
   test(`속성 독립성: ${failure} 실패해도 다른 서비스 완료 결과 유지`, async () => {

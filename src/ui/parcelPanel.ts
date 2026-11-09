@@ -1,7 +1,4 @@
-import { cadastralSource } from '../services/vworld/cadastral';
-import { landLedgerSource } from '../services/vworld/landLedger';
 import type { LandLedger } from '../services/vworld/landLedger';
-import { landPriceSource } from '../services/vworld/landPrice';
 import type { LandPriceBatch } from '../services/vworld/landPrice';
 import type { AttributeState } from '../services/vworld/parcelValidation';
 import type { PriceHistorySnapshot } from '../features/landPriceHistory';
@@ -11,7 +8,12 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
   controls.className = 'parcel-controls';
   const toggle = document.createElement('button');
   toggle.type = 'button';
-  toggle.textContent = '지적도 켜기';
+  toggle.className = 'parcel-toggle';
+  const icon = document.createElement('span'); icon.className = 'parcel-layer-icon'; icon.setAttribute('aria-hidden', 'true');
+  const toggleLabel = document.createElement('span'); toggleLabel.textContent = '지적도';
+  const toggleState = document.createElement('span'); toggleState.className = 'parcel-toggle-state'; toggleState.textContent = 'OFF';
+  toggle.append(icon, toggleLabel, toggleState);
+  toggle.setAttribute('aria-label', '지적도 켜기');
   toggle.setAttribute('aria-pressed', 'false');
   const status = document.createElement('p');
   status.setAttribute('role', 'status');
@@ -41,16 +43,11 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
   const history = document.createElement('details'); history.className = 'parcel-price-history'; history.hidden = true;
   const historyTitle = document.createElement('summary'); historyTitle.textContent = '연도별 공시지가 이력';
   const historyContent = document.createElement('div'); history.append(historyTitle, historyContent);
-  const details = document.createElement('details'); details.className = 'parcel-data-details';
-  const detailsTitle = document.createElement('summary'); detailsTitle.textContent = '자료 상세';
-  const sources = document.createElement('div'); sources.className = 'parcel-data-sources';
-  const ledgerDetails = document.createElement('div'), priceDetails = document.createElement('div');
-  details.append(detailsTitle, sources, ledgerDetails, priceDetails);
   let requestedYear: string | undefined;
   const note = document.createElement('p');
   note.className = 'parcel-note';
   note.textContent = '개별공시지가는 원/㎡ 단가이며 전체 토지가격이나 실거래가가 아닙니다.';
-  panel.append(heading, base, ledger, price, history, details, note);
+  panel.append(heading, base, ledger, price, history, note);
   toggle.addEventListener('click', onToggle);
   close.addEventListener('click', onClose);
   const field = (list: HTMLElement, label: string, value: string) => {
@@ -58,19 +55,17 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
     term.textContent = label; description.textContent = value;
     list.append(term, description);
   };
-  const source = (host: HTMLElement, label: string, href: string) => {
-    const link = document.createElement('a');
-    link.textContent = label; link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer';
-    host.append(link);
-  };
   const message = (host: HTMLElement, value: string) => {
     host.replaceChildren();
     const paragraph = document.createElement('p'); paragraph.textContent = value; host.append(paragraph);
   };
+  // 기존 산출값에 표시 색상만 부여하며 데이터와 계산은 변경하지 않는다.
+  const rateClass = (rate: string) => rate.startsWith('+') ? 'price-rise' : rate.startsWith('-') ? 'price-fall' : rate === '0.00%' ? 'price-steady' : 'price-unavailable';
   return {
     controls, panel,
     setEnabled(enabled: boolean) {
-      toggle.textContent = enabled ? '지적도 끄기' : '지적도 켜기';
+      toggleState.textContent = enabled ? 'ON' : 'OFF';
+      toggle.setAttribute('aria-label', enabled ? '지적도 끄기' : '지적도 켜기');
       toggle.setAttribute('aria-pressed', String(enabled));
     },
     setFeatureVisible(visible: boolean, hasSelection: boolean) {
@@ -82,40 +77,30 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
       boundaryStatus.textContent = value; boundaryStatus.hidden = !value;
       boundaryStatus.setAttribute('aria-busy', String(busy));
     },
-    clear() { panel.hidden = true; base.replaceChildren(); ledger.replaceChildren(); price.replaceChildren(); sources.replaceChildren(); ledgerDetails.replaceChildren(); priceDetails.replaceChildren(); details.open = false; history.open = false; history.hidden = true; historyContent.replaceChildren(); },
+    clear() { panel.hidden = true; base.replaceChildren(); ledger.replaceChildren(); price.replaceChildren(); history.open = false; history.hidden = true; historyContent.replaceChildren(); },
     showSelection(id: string, jibun: string | null, priceYear?: string) {
       panel.hidden = false;
-      requestedYear = priceYear; details.open = false;
+      requestedYear = priceYear;
       history.open = false; history.hidden = priceYear !== undefined;
       message(historyContent, '조회된 이력을 준비 중입니다. 최신 가용 가격 확인을 위한 페이지 조회를 공유합니다.');
       base.replaceChildren();
       const lot = document.createElement('p'); lot.className = 'parcel-lot-number'; lot.textContent = jibun ?? '지번 미제공';
       const identifier = document.createElement('p'); identifier.className = 'parcel-pnu'; identifier.textContent = `PNU ${id}`;
       base.append(lot, identifier);
-      sources.replaceChildren(); ledgerDetails.replaceChildren(); priceDetails.replaceChildren();
-      source(sources, 'V-World 연속지적도', cadastralSource);
-      source(sources, '국토교통부 토지임야정보', landLedgerSource);
-      source(sources, '국토교통부 개별공시지가', landPriceSource);
-      const context = document.createElement('p'); context.textContent = `${priceYear === undefined ? '공시지가 기준연도 생략 조회. 전체 페이지 검증 후 API 반환 자료 안에서 최신 연도를 확인합니다. 반환되지 않은 과거 연도의 자료 부재를 뜻하지 않습니다.' : `공시지가 조회 연도 ${priceYear}년. 최신 연도 자동 선택 아님.`} 연속지적도는 참고용이며 공부상 면적과 도형 계산면적은 다릅니다.`;
-      sources.append(context);
       message(ledger, '토지정보 불러오는 중…'); message(price, priceYear === undefined ? '최신 가용 공시지가 확인 중…' : `${priceYear}년 공시지가 불러오는 중…`);
     },
     renderLedger(state: AttributeState<LandLedger>) {
       ledger.replaceChildren();
-      ledgerDetails.replaceChildren();
       if (state.status === 'ok') {
         const list = document.createElement('dl'), value = state.value; list.className = 'parcel-facts';
         const category = document.createElement('div'), area = document.createElement('div');
         field(category, '지목', value.landCategoryName ?? '미제공');
         field(area, '공부상 면적', value.registeredArea === null ? '미제공' : `${value.registeredArea.toLocaleString('ko-KR')} ㎡`);
         list.append(category, area); ledger.append(list);
-        const record = document.createElement('dl');
-        field(record, '지목 코드', value.landCategoryCode ?? '미제공'); field(record, '토지임야 갱신일', value.updatedAt ?? '미제공'); ledgerDetails.append(record);
       } else message(ledger, state.message);
     },
     renderPrice(state: AttributeState<LandPriceBatch>, historyState?: PriceHistorySnapshot) {
       price.replaceChildren();
-      priceDetails.replaceChildren();
       // 같은 연도의 서로 다른 기준월을 구분할 때만 기본 화면에 월을 표시한다.
       const needsMonth = (value: LandPriceBatch['records'][number]) => state.status === 'ok' &&
         new Set(state.value.records.filter((record) => record.pnu === value.pnu && record.year === value.year).map((record) => record.month)).size > 1;
@@ -139,7 +124,7 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
           const row = document.createElement('tr'), year = document.createElement('td'), amount = document.createElement('td'), change = document.createElement('td');
           const basis = document.createElement('small'); basis.textContent = `${needsMonth(value.record) ? `${monthLabel(value.record)} · ` : ''}공시 ${value.record.publishedAt ?? '일자 미제공'}`;
           year.textContent = value.record.year; year.append(basis);
-          amount.textContent = value.record.pricePerSquareMeter?.toLocaleString('ko-KR') ?? '미제공'; change.textContent = value.rate;
+          amount.textContent = value.record.pricePerSquareMeter?.toLocaleString('ko-KR') ?? '미제공'; change.textContent = value.rate; change.className = rateClass(value.rate);
           if (value.comparisonNote) { const caution = document.createElement('small'); caution.textContent = value.comparisonNote; change.append(caution); }
           row.append(year, amount, change); body.append(row);
         }
@@ -170,20 +155,9 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
           basis.textContent = `${value.year}년${needsMonth(value) ? ` ${monthLabel(value)}` : ''} 기준 · 공시 ${value.publishedAt ?? '일자 미제공'}`;
           card.append(amount, basis);
           const statistic = historyState?.statistics.find((row) => row.record.pnu === value.pnu && row.record.year === value.year && row.record.month === value.month && row.record.publishedAt === value.publishedAt && row.record.pricePerSquareMeter === value.pricePerSquareMeter);
-          if (statistic) { const change = document.createElement('p'); change.className = 'parcel-price-change'; change.textContent = `전년 대비 ${statistic.rate}${statistic.comparisonNote ? ` · ${statistic.comparisonNote}` : ''}`; card.append(change); }
+          if (statistic) { const change = document.createElement('p'); change.className = `parcel-price-change ${rateClass(statistic.rate)}`; change.textContent = `전년 대비 ${statistic.rate}${statistic.comparisonNote ? ` · ${statistic.comparisonNote}` : ''}`; card.append(change); }
           price.append(card);
         }
-        const metadata = document.createElement('p');
-        metadata.textContent = `원본 반환 ${batch.returnedCount}건 · 표시 원본 ${batch.records.length}건 · 완전 중복 제거 ${batch.duplicatesRemoved}건 · 전체 ${batch.totalCount ?? '미확인'}건 · ${batch.completeness === 'complete' ? 'API 메타데이터 기준 완전 조회' : batch.completeness === 'partial' ? '부분 조회' : '완전성 미확인'}`;
-        priceDetails.append(metadata);
-        batch.records.forEach((value, index) => {
-          const list = document.createElement('dl');
-          field(list, '레코드', String(index + 1));
-          field(list, '개별공시지가', value.pricePerSquareMeter === null ? '미제공' : `${value.pricePerSquareMeter.toLocaleString('ko-KR')} 원/㎡`);
-          field(list, '기준연월', `${value.year}년 ${value.month ? `${value.month}월` : '(월 미제공)'}`);
-          field(list, '공시일자', value.publishedAt ?? '미제공');
-          field(list, '공시지가 갱신일', value.updatedAt ?? '미제공'); priceDetails.append(list);
-        });
       } else { const notice = document.createElement('p'); notice.textContent = state.message; price.append(notice); }
     },
     dispose() { toggle.removeEventListener('click', onToggle); close.removeEventListener('click', onClose); controls.remove(); panel.remove(); },
