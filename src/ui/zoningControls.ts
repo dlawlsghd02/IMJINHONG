@@ -1,7 +1,8 @@
+import { createZoningLegend } from './zoningLegend';
 import { zoningLayers, type ZoningLayerId } from '../services/vworld/zoningWms';
 
 export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLayerId[]) => void,
-  onOpacity: (opacity: number) => void) {
+  onOpacity: (opacity: number) => void, authentication?: { apiKey: string; domain?: string }) {
   const root = document.createElement('div'); root.className = 'zoning-controls';
   const toggle = document.createElement('button'); toggle.type = 'button'; toggle.textContent = '용도지역';
   toggle.setAttribute('aria-pressed', 'false');
@@ -35,17 +36,26 @@ export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLay
     if ((!expanded && options.contains(document.activeElement)) || (!mobile.matches && visibility === document.activeElement)) toggle.focus();
     options.hidden = !expanded;
   };
-  const changed = () => onChange(enabled, zoningLayers.filter((_, index) => inputs[index].checked).map((layer) => layer.id));
+  const selectedIds = () => zoningLayers.filter((_, index) => inputs[index].checked).map((layer) => layer.id);
+  const officialLegend = authentication ? createZoningLegend(authentication.apiKey, authentication.domain, () => {
+    if (mobile.matches) { expanded = false; updatePresentation(); }
+  }) : undefined;
+  if (officialLegend) root.append(officialLegend.root);
+  const changed = () => { officialLegend?.setState(enabled, selectedIds()); onChange(enabled, selectedIds()); };
   const toggled = () => {
     if (mobile.matches) {
       expanded = !expanded;
       if (expanded && !enabled) { enabled = true; changed(); }
     } else { enabled = !enabled; expanded = enabled; changed(); }
+    if (expanded && mobile.matches) officialLegend?.collapse();
     updatePresentation();
   };
   const visibilityChanged = () => { enabled = visibility.checked; updatePresentation(); changed(); };
   // 화면 회전·너비 변경으로 표시 상태·선택값·요청 설정을 변경하지 않는다.
-  const screenChanged = () => updatePresentation();
+  const screenChanged = () => {
+    if (mobile.matches && expanded) officialLegend?.collapse();
+    updatePresentation();
+  };
   const opacityChanged = () => {
     const value = Number(opacity.value);
     if (!Number.isFinite(value) || value < 0 || value > 100) return;
@@ -58,6 +68,6 @@ export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLay
     status.textContent = message; status.hidden = !message; status.setAttribute('aria-busy', String(busy));
   }, dispose() {
     toggle.removeEventListener('click', toggled); inputs.forEach((input) => input.removeEventListener('change', changed)); opacity.removeEventListener('input', opacityChanged);
-    visibility.removeEventListener('change', visibilityChanged); mobile.removeEventListener('change', screenChanged); root.remove();
+    visibility.removeEventListener('change', visibilityChanged); mobile.removeEventListener('change', screenChanged); officialLegend?.dispose(); root.remove();
   } };
 }

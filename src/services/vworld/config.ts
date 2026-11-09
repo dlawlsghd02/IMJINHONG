@@ -1,4 +1,5 @@
 export type BasemapId = 'base' | 'satellite';
+export type TileLayerId = BasemapId | 'hybrid';
 
 export const vworldConfig = {
   endpoint: 'https://api.vworld.kr/req/wmts/1.0.0',
@@ -10,4 +11,5 @@ export const vworldConfig = {
 export const basemapDefinitions = {
   base: { label: '일반지도', layer: 'Base', extension: 'png', maxZoom: 19 },
   satellite: { label: '위성지도', layer: 'Satellite', extension: 'jpeg', maxZoom: 18 },
+  hybrid: { label: '위성지도 명칭', layer: 'Hybrid', extension: 'png', maxZoom: 18 },
 } as const;

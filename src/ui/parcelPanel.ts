@@ -1,3 +1,5 @@
+import { landUseNotices } from '../services/vworld/landUse';
+import type { LandUseState } from '../services/vworld/landUse';
 import type { LandLedger } from '../services/vworld/landLedger';
 import type { LandPriceBatch } from '../services/vworld/landPrice';
 import type { AttributeState } from '../services/vworld/parcelValidation';
@@ -38,6 +40,7 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
   const base = document.createElement('div'); base.className = 'parcel-identity';
   const ledger = document.createElement('div');
   ledger.className = 'parcel-facts-host';
+  const landUse = document.createElement('div'); landUse.className = 'parcel-land-use';
   const price = document.createElement('div');
   price.className = 'parcel-prices'; // 향후 연도별 이력을 별도 섹션으로 추가할 수 있는 독립 영역
   const history = document.createElement('details'); history.className = 'parcel-price-history'; history.hidden = true;
@@ -47,7 +50,7 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
   const note = document.createElement('p');
   note.className = 'parcel-note';
   note.textContent = '개별공시지가는 원/㎡ 단가이며 전체 토지가격이나 실거래가가 아닙니다.';
-  panel.append(heading, base, ledger, price, history, note);
+  panel.append(heading, base, ledger, landUse, price, history, note);
   toggle.addEventListener('click', onToggle);
   close.addEventListener('click', onClose);
   const field = (list: HTMLElement, label: string, value: string) => {
@@ -77,7 +80,7 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
       boundaryStatus.textContent = value; boundaryStatus.hidden = !value;
       boundaryStatus.setAttribute('aria-busy', String(busy));
     },
-    clear() { panel.hidden = true; base.replaceChildren(); ledger.replaceChildren(); price.replaceChildren(); history.open = false; history.hidden = true; historyContent.replaceChildren(); },
+    clear() { panel.hidden = true; base.replaceChildren(); ledger.replaceChildren(); landUse.replaceChildren(); price.replaceChildren(); history.open = false; history.hidden = true; historyContent.replaceChildren(); },
     showSelection(id: string, jibun: string | null, priceYear?: string) {
       panel.hidden = false;
       requestedYear = priceYear;
@@ -87,6 +90,7 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
       const lot = document.createElement('p'); lot.className = 'parcel-lot-number'; lot.textContent = jibun ?? '지번 미제공';
       const identifier = document.createElement('p'); identifier.className = 'parcel-pnu'; identifier.textContent = `PNU ${id}`;
       base.append(lot, identifier);
+      message(landUse, '용도지역 조회 중…');
       message(ledger, '토지정보 불러오는 중…'); message(price, priceYear === undefined ? '최신 가용 공시지가 확인 중…' : `${priceYear}년 공시지가 불러오는 중…`);
     },
     renderLedger(state: AttributeState<LandLedger>) {
@@ -96,8 +100,28 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
         const category = document.createElement('div'), area = document.createElement('div');
         field(category, '지목', value.landCategoryName ?? '미제공');
         field(area, '공부상 면적', value.registeredArea === null ? '미제공' : `${value.registeredArea.toLocaleString('ko-KR')} ㎡`);
+
         list.append(category, area); ledger.append(list);
-      } else message(ledger, state.message);
+      } else { message(ledger, state.message); }
+    },
+    renderLandUse(state: LandUseState) {
+      landUse.replaceChildren();
+      const title = document.createElement('p'); title.textContent = '용도지역'; landUse.append(title);
+      if (state.status !== 'ok') { const notice = document.createElement('p'); notice.textContent = state.message; landUse.append(notice); return; }
+      for (const item of state.value.summary) {
+        const line = document.createElement('p'); line.className = 'parcel-zoning-line';
+        const name = document.createElement('span'); name.className = 'parcel-zoning-name'; name.textContent = item.name;
+        const relation = document.createElement('small'); relation.className = 'parcel-zoning-relation'; relation.textContent = `(${item.relations.join('·')})`;
+        line.append(name, relation); landUse.append(line);
+      }
+      const notices = landUseNotices(state.value);
+      for (const value of notices.filter(Boolean)) {
+        const notice = document.createElement('p');
+        const unconfirmed = value === '확인된 용도지역을 표시합니다. 일부 항목은 분류를 확인하지 못했습니다.';
+        notice.className = unconfirmed ? 'parcel-zoning-note' : 'parcel-zoning-warning';
+        notice.textContent = unconfirmed ? '일부 항목 미확인' : value;
+        landUse.append(notice);
+      }
     },
     renderPrice(state: AttributeState<LandPriceBatch>, historyState?: PriceHistorySnapshot) {
       price.replaceChildren();

@@ -1,3 +1,4 @@
+import { loadLandUse } from '../services/vworld/landUse';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import { Fill, Stroke, Style } from 'ol/style.js';
@@ -33,7 +34,7 @@ export const cadastralFeature: MapFeature = {
     let lastSettledExpiresAt = Infinity;
     const cache = createParcelBoundaryCache();
     let pointController: AbortController | undefined, boxController: AbortController | undefined;
-    let attributesPending: { ledger: boolean; price: boolean } | undefined;
+    let attributesPending: { ledger: boolean; price: boolean; landUse: boolean } | undefined;
     const attributeAuth = { apiKey: vworldApiKey, domain: vworldDomain };
     const priceHistory = createLandPriceHistory((id, page, signal) => loadLandPricePage(id, attributeAuth, signal, page));
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -64,7 +65,8 @@ export const cadastralFeature: MapFeature = {
       const pointWasPending = !!pointController;
       const canceledAttributes = attributesPending;
       invalidate(); invalidateBox();
-      if (canceledAttributes && (canceledAttributes.ledger || canceledAttributes.price) && selected.getFeatures().length) {
+      if (canceledAttributes && (canceledAttributes.ledger || canceledAttributes.price || canceledAttributes.landUse) && selected.getFeatures().length) {
+        if (canceledAttributes.landUse) panel.renderLandUse({ status: 'error', message: '용도지역 조회가 취소되었습니다. 다시 선택하세요.' });
         if (canceledAttributes.ledger) panel.renderLedger({ status: 'error', message: '지적도 전환으로 조회가 취소되었습니다. 다시 필지를 선택하세요.' });
         if (canceledAttributes.price) panel.renderPrice({ status: 'error', message: '지적도 전환으로 조회가 취소되었습니다. 다시 필지를 선택하세요.' });
         panel.setStatus('진행 중이던 조회가 취소되었습니다. 다시 필지를 선택하세요.');
@@ -87,10 +89,13 @@ export const cadastralFeature: MapFeature = {
       selected.clear(); selected.addFeature(feature.clone());
       panel.showSelection(id, text(feature.get('jibun')));
       panel.setStatus('선택 필지 상세정보 확인 중…', true);
-      const pending = { ledger: true, price: true }; attributesPending = pending;
+      const pending = { ledger: true, price: true, landUse: true }; attributesPending = pending;
       const current = () => !disposed && enabled && token === generation && !signal.aborted;
       // 한 서비스가 느리거나 실패해도 완료된 다른 서비스 결과는 즉시 표시한다.
       await Promise.allSettled([
+        loadLandUse(id, attributeAuth, signal).then((state) => {
+          if (!current()) return; pending.landUse = false; panel.renderLandUse(state);
+        }),
         loadLandLedger(id, attributeAuth, signal).then((state) => {
           if (!current()) return; pending.ledger = false; panel.renderLedger(state);
         }, () => {

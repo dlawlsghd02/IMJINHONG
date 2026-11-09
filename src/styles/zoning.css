@@ -24,3 +24,14 @@
   .zoning-controls p { padding: 5px 7px; font-size: 11px; }
 }
 @media (max-height: 500px) { .zoning-controls fieldset { max-height: 24dvh; } }
+
+/* Official images keep their aspect ratio, independent of map opacity. */
+.zoning-legend { margin-top: 6px; }
+.zoning-legend-panel { margin-top: 6px; padding: 10px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fffffff2; max-width: 100%; max-height: min(45dvh, 440px); overflow: auto; }
+.zoning-legend-panel h3 { margin: 8px 0 6px; font-size: 12px; }
+.zoning-legend-panel img { display: block; max-width: 100%; height: auto; }
+.zoning-legend-panel [hidden], .zoning-legend[hidden], .zoning-legend-panel[hidden] { display: none; }
+.zoning-legend-panel small { display: block; margin-top: 8px; color: #64748B; }
+.zoning-controls button:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
+@media (max-width: 900px) { .zoning-legend-panel { max-height: 36dvh; padding: 8px; } }
+@media (max-height: 500px) { .zoning-legend-panel { max-height: 24dvh; } }

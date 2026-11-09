@@ -24,7 +24,7 @@ export const zoningFeature: MapFeature = {
       if (active) source.updateParams(zoningParameters(ids));
       layer.setVisible(active);
       ui.setStatus(!enabled ? '' : !ids.length ? '표시할 용도지역을 선택하세요.' : '용도지역 타일 요청 대기 중…');
-    }, (opacity) => layer.setOpacity(opacity));
+    }, (opacity) => layer.setOpacity(opacity), { apiKey: vworldApiKey, domain: vworldDomain });
     const current = (tile: { getKey(): string }) => active && tile.getKey().startsWith(source.getKey() + '/');
     const keys: EventsKey[] = [
       source.on('tileloadstart', ({ tile }) => { if (current(tile)) { pending.add(tile); notify(); } }),

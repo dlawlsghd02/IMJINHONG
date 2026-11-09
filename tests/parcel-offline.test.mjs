@@ -226,6 +226,20 @@ const deferred = () => { let resolve; const promise = new Promise((done) => { re
 globalThis.parcelOfflineMocks = { calls: [], point: undefined };
 const mounted = await bundle(`export { cadastralFeature } from './src/features/cadastral';`, [{
   name: 'offline-provider', setup(builder) {
+    builder.onLoad({ filter: /[/\\]services[/\\]vworld[/\\]landUse\.ts$/ }, async ({ path }) => {
+      // Keep the real pure notice function; only replace the network loader.
+      const source = await readFile(path, 'utf8');
+      const noticeStart = source.indexOf('export function landUseNotices(');
+      const noticeEnd = source.indexOf('export async function loadLandUse(', noticeStart);
+      assert.ok(noticeStart >= 0 && noticeEnd > noticeStart);
+      const notices = source.slice(noticeStart, noticeEnd).replace('value: LandUseBatch', 'value: any');
+      return { loader: 'ts', contents: notices + `
+      export function loadLandUse(id, auth, signal) {
+        const calls = globalThis.parcelOfflineMocks.landUseCalls;
+        return new Promise(resolve => calls.push({ id, signal, resolve }));
+      }
+    ` };
+    });
     builder.onLoad({ filter: /[/\\]services[/\\]vworld[/\\]cadastral\.ts$/ }, () => ({ loader: 'ts', contents: `
       export const cadastralSource = 'https://www.vworld.kr/';
       export function validateParcelBox() { throw new Error('자동 BOX가 호출되면 테스트 실패'); }
@@ -246,7 +260,7 @@ function setupMap() {
     addLayer(layer) { layers.push(layer); }, removeLayer() {}, hasFeatureAtPixel: () => false,
   };
   const controls = new ElementMock(), details = new ElementMock();
-  globalThis.parcelOfflineMocks.calls = []; globalThis.parcelOfflineMocks.point = deferred();
+  globalThis.parcelOfflineMocks.calls = []; globalThis.parcelOfflineMocks.landUseCalls = []; globalThis.parcelOfflineMocks.point = deferred();
   const dispose = mounted.cadastralFeature.mount({ map, parcelControlsHost: controls, parcelPanelHost: details, vworldApiKey: '', searchHost: new ElementMock() });
   return { layers, dispose, setZoom: (value) => { zoom = value; }, fire: (type, event) => handlers.get(type)?.(event),
     toggle: () => controls.children[0].children[0].click(),
@@ -1023,4 +1037,54 @@ developmentTest('상시 ON/OFF: 부분 응답 자동 추가 조회는 없고 명
   await f.clock.advance(5000); f.fire('moveend'); await f.clock.advance(350);
   assert.equal(f.boxes.length, 1); assert.match(f.boundaryStatus.textContent, /일부/);
   f.toggle(); f.toggle(); await f.clock.advance(350); assert.equal(f.boxes.length, 2);
+});
+
+test('용도지역 늦은 응답: 새 필지·닫기·OFF 후 패널 갱신 방지', async () => {
+  const ui = setupMap(); ui.toggle(); ui.fire('singleclick', click());
+  parcelOfflineMocks.point.resolve(selectionBatch()); await tick();
+  const first = parcelOfflineMocks.landUseCalls[0]; assert.ok(first);
+  parcelOfflineMocks.point = deferred(); const next = click(); next.coordinate[0] += 1;
+  ui.fire('singleclick', next); assert.equal(first.signal.aborted, true);
+  first.resolve({status:'error',message:'OLD_RESULT'}); await tick();
+  const allText = (node) => (node.textContent || '') + node.children.map(allText).join('');
+  assert.equal(allText(ui.panel).includes('OLD_RESULT'), false);
+  parcelOfflineMocks.point.resolve(selectionBatch()); await tick();
+  const second = parcelOfflineMocks.landUseCalls[1]; assert.ok(second);
+  ui.close(); assert.equal(second.signal.aborted, true);
+  second.resolve({status:'error',message:'CLOSED_RESULT'}); await tick();
+  assert.equal(allText(ui.panel).includes('CLOSED_RESULT'), false);
+  parcelOfflineMocks.point = deferred(); ui.fire('singleclick', click());
+  parcelOfflineMocks.point.resolve(selectionBatch()); await tick();
+  const third = parcelOfflineMocks.landUseCalls[2]; assert.ok(third);
+  ui.toggle(); assert.equal(third.signal.aborted, true);
+  third.resolve({status:'error',message:'OFF_RESULT'}); await tick();
+  assert.equal(allText(ui.panel).includes('OFF_RESULT'), false); ui.dispose();
+});
+
+test('용도지역 UI: 명칭 유지·작은 관계·간결한 미확인 안내 및 다른 경고 보존', () => {
+  const ui = api.createParcelPanel(() => {}, () => {});
+  const value = { records: [], summary: [{code:'UQA220',name:'일반상업지역',relations:['포함']}], total:1,page:1,size:1000,partial:false,unknown:true,
+    diagnostics:{zoning:1,nonTarget:0,unknownCode:1,nameMismatch:0,relationMismatch:0,touching:0} };
+  ui.renderLandUse({status:'ok',value});
+  assert.equal(byClass(ui.panel,'parcel-zoning-name')[0].textContent,'일반상업지역');
+  assert.equal(byClass(ui.panel,'parcel-zoning-relation')[0].textContent,'(포함)');
+  assert.equal(byClass(ui.panel,'parcel-zoning-note')[0].textContent,'일부 항목 미확인');
+  assert.equal(panelText(ui.panel).includes('확인된 용도지역을 표시합니다.'),false);
+  ui.renderLandUse({status:'ok',value:{...value,unknown:false,partial:true}});
+  assert.equal(byClass(ui.panel,'parcel-zoning-note').length,0);
+  assert.match(panelText(ui.panel),/일부 조회/);
+  ui.renderLandUse({status:'error',message:'용도지역 조회 실패'});assert.match(panelText(ui.panel),/조회 실패/);
+  ui.dispose();
+});
+
+test('필지 UI 개편: 지번 대체·2열 기본정보·독립 전체너비 용도지역', () => {
+ const ui=api.createParcelPanel(()=>{},()=>{});
+ ui.showSelection(id,'산 181-8'); assert.match(panelText(ui.panel),/산 181-8/);
+ ui.renderLedger({status:'ok',value:{pnu:id,landCategoryCode:'08',landCategoryName:'대',registeredArea:2659.7,updatedAt:null}});
+ const facts=byClass(ui.panel,'parcel-facts')[0];assert.equal(facts.children.length,2);
+ assert.equal(byClass(facts,'parcel-land-use').length,0);
+ assert.equal(byClass(ui.panel,'parcel-land-use').length,1);
+ assert.match(panelText(facts),/2,659.7/);
+ ui.showSelection(id,null);assert.match(panelText(ui.panel),/지번 미제공/);
+ ui.dispose();
 });

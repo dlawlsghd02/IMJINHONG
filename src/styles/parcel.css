@@ -53,3 +53,21 @@
   #parcel-controls-host p { max-height: 34px; overflow: auto; }
   #parcel-panel-host { bottom: 75px; max-height: 32vh; }
 }
+
+.parcel-land-use { margin-top: 6px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.parcel-land-use p { margin: 2px 0; }
+.parcel-zoning-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 4px; }
+.parcel-zoning-name { min-width: 0; }
+.parcel-zoning-relation { font-size: 11px; color: #64748B; }
+.parcel-land-use .parcel-zoning-note { font-size: 11px; color: #64748B; margin-top: 1px; }
+
+/* Parcel facts remain paired; zoning is an independent full-width section. */
+.parcel-facts { margin-bottom: 12px; }
+.parcel-facts dd { overflow-wrap: anywhere; }
+.parcel-land-use { background: #F8FAFC; border-radius: 10px; padding: 12px; margin: 0 0 14px; }
+.parcel-land-use > p:first-child { font-size: 11px; color: #64748B; margin-bottom: 6px; }
+.parcel-panel .parcel-lot-number { overflow-wrap: anywhere; }
+.parcel-price-card { background: #F8FAFC; padding: 12px; border-radius: 10px; }
+.parcel-price-amount strong { font-size: 20px; font-weight: 650; letter-spacing: -.02em; }
+.parcel-price-change { font-size: 11px; }
+.parcel-prices h3 { display: block; line-height: 1.5; margin-bottom: 6px; }

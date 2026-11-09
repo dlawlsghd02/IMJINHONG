@@ -11,6 +11,7 @@ export function createLayout(root: HTMLElement) {
         <div class="basemap-controls" role="group" aria-label="배경지도 선택">
           <button type="button" data-basemap="base" aria-pressed="true" disabled>일반지도</button>
           <button type="button" data-basemap="satellite" aria-pressed="false" disabled>위성지도</button>
+          <button type="button" data-map-names aria-label="위성지도 명칭 표시" aria-pressed="true" hidden disabled>명칭</button>
         </div>
         <div class="zoom-controls" role="group" aria-label="지도 확대·축소">
           <button type="button" data-zoom="1" aria-label="지도 확대" disabled>+</button>
@@ -23,6 +24,7 @@ export function createLayout(root: HTMLElement) {
         <div id="parcel-panel-host"></div>
         <section class="status-panel" aria-label="지도 상태">
           <p id="map-status" role="status" aria-live="polite">지도 설정 확인 중…</p>
+          <p id="hybrid-status" role="status" aria-live="polite" hidden></p>
           <button id="retry-tiles" type="button" hidden>타일 다시 요청</button>
         </section>
       </main>
@@ -44,6 +46,7 @@ export function createLayout(root: HTMLElement) {
     parcelPanelHost: get<HTMLDivElement>('#parcel-panel-host'),
     zoningHost: get<HTMLDivElement>('#zoning-controls-host'),
     status: get<HTMLParagraphElement>('#map-status'),
+    hybridStatus: get<HTMLParagraphElement>('#hybrid-status'),
     retry: get<HTMLButtonElement>('#retry-tiles'),
     basis: get<HTMLSpanElement>('#coordinate-basis'),
     coordinates: get<HTMLOutputElement>('#coordinates'),

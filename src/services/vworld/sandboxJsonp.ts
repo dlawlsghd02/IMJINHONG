@@ -1,8 +1,8 @@
 import { parcelConfig } from '../../config/parcel';
 import { ParcelError } from './parcelValidation';
 
-export type SandboxService = 'cadastral' | 'ledger' | 'price';
-const endpoints = { cadastral: '/req/data', ledger: '/ned/data/ladfrlList', price: '/ned/data/getIndvdLandPriceAttr' } as const;
+export type SandboxService = 'cadastral' | 'ledger' | 'price' | 'landUse';
+const endpoints = { cadastral: '/req/data', ledger: '/ned/data/ladfrlList', price: '/ned/data/getIndvdLandPriceAttr', landUse: '/ned/data/getLandUseAttr' } as const;
 export function requestSandboxJsonp(service: SandboxService, parameters: URLSearchParams, signal: AbortSignal): Promise<unknown> {
   return new Promise((resolve, reject) => {
     if (signal.aborted) { reject(new DOMException('Invalidated', 'AbortError')); return; }

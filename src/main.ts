@@ -30,11 +30,15 @@ try {
     ui.status.textContent = failures
       ? `${label}: 누적 타일 요청 ${failures}건 실패(시작 또는 재요청 이후). 현재 실패 원인은 개발자 도구 Network에서 확인하세요.`
       : pending ? `${label} 타일 불러오는 중…` : `${label} · 타일 요청 오류 없음`;
+  }, (failures) => {
+    ui.hybridStatus.hidden = failures === 0;
+    ui.hybridStatus.dataset.state = failures ? 'error' : 'normal';
+    ui.hybridStatus.textContent = failures ? `명칭 타일 누적 ${failures}건 실패. 위성영상은 계속 표시됩니다.` : '';
   });
   cleanup.push(() => basemaps.dispose());
   const instance = createMap(ui.target, basemaps.layers);
   cleanup.push(() => instance.dispose());
-  cleanup.push(bindMapControls(root, instance.map, (id) => basemaps.select(id)));
+  cleanup.push(bindMapControls(root, instance.map, (id) => basemaps.select(id), (enabled) => basemaps.setNamesEnabled(enabled)));
   cleanup.push(bindCoordinateDisplay(instance.map, ui.basis, ui.coordinates));
   // Optional feature initialization must not tear down a working map.
   features.forEach((feature) => {
