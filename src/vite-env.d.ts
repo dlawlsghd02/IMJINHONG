@@ -3,4 +3,5 @@
 interface ImportMetaEnv {
   readonly VITE_VWORLD_API_KEY?: string;
   readonly VITE_VWORLD_DOMAIN?: string;
+  readonly VITE_CADASTRAL_AUTO_BOX?: string;
 }

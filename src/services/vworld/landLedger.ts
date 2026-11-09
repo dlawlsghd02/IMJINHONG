@@ -1,5 +1,7 @@
-import { attributeRows, date, nonNegative, pnu, text, ParcelError } from './parcelValidation';
+import { attributeRows, date, nonNegative, pnu, text, object, ParcelError } from './parcelValidation';
 import type { AttributeState } from './parcelValidation';
+import { requestParcelAttribute, attributeFailure } from './attributeRequest';
+import type { AttributeAuthentication } from './attributeRequest';
 
 export const landLedgerSource = 'https://www.vworld.kr/dtna/dtna_apiSvcFc_s001.do?apiNum=128';
 export interface LandLedger {
@@ -27,8 +29,15 @@ export function parseLandLedger(payload: unknown, requestedPnu: string): Attribu
   return { status: 'ok', value: unique[0] };
 }
 
-// 전송 규격 검증 전에는 fetch/JSONP 요청을 만들지 않는다.
-export async function loadLandLedger(requestedPnu: string): Promise<AttributeState<LandLedger>> {
-  pnu(requestedPnu);
-  return { status: 'unavailable', message: '조회 불가: 토지임야 API의 브라우저 전송 방식 검증 전입니다.' };
+export async function loadLandLedger(requestedPnu: string, auth: AttributeAuthentication, signal: AbortSignal): Promise<AttributeState<LandLedger>> {
+  try {
+    const payload = await requestParcelAttribute('ledger', requestedPnu, auth, signal);
+    const result = parseLandLedger(payload, requestedPnu);
+    if (result.status === 'not-found') {
+      const root = object(object(payload).ladfrlVOList);
+      if (String(root.totalCount) !== '0') throw new ParcelError('토지임야 응답의 빈 목록을 검증하지 못했습니다.');
+    }
+    if (result.status === 'ok' && result.value.landCategoryName) result.value.landCategoryName = result.value.landCategoryName.split(auth.apiKey.trim()).join('[인증정보 제외]').replace(/https?:\/\/\S+/gi, '[URL 제외]');
+    return result;
+  } catch (error) { return { status: 'error', message: attributeFailure(error) }; }
 }

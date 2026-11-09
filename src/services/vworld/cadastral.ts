@@ -3,14 +3,17 @@ import Polygon from 'ol/geom/Polygon.js';
 import MultiPolygon from 'ol/geom/MultiPolygon.js';
 import { containsExtent } from 'ol/extent.js';
 import { get as getProjection } from 'ol/proj.js';
-import { getArea } from 'ol/sphere.js';
 import { parcelConfig } from '../../config/parcel';
 import { integer, object, ParcelError, pnu, text } from './parcelValidation';
 import { requestCadastralJsonp } from './cadastralJsonp';
 
 export type ParcelGeometry = Polygon | MultiPolygon;
 export type ParcelFeature = Feature<ParcelGeometry>;
-export interface ParcelBatch { features: ParcelFeature[]; truncated: boolean }
+export interface ParcelBatch {
+  features: ParcelFeature[];
+  truncated: boolean;
+  completeness: 'complete' | 'partial' | 'unknown';
+}
 export const cadastralSource = 'https://www.vworld.kr/dev/v4dv_2ddataguide2_s002.do?svcIde=cadastral';
 
 // 공식 연속지적도 레퍼런스에서 확인한 코드만 허용한다.
@@ -65,10 +68,10 @@ function checkCrs(value: unknown) {
   if (name !== 'EPSG:4326' && name !== 'urn:ogc:def:crs:EPSG::4326') throw new ParcelError('지적 응답 좌표계가 EPSG:4326과 다릅니다.');
 }
 
-export function parseCadastral(payload: unknown, limit: number): ParcelBatch {
+export function parseCadastral(payload: unknown, limit: number, mode: 'point' | 'box' = 'point'): ParcelBatch {
   const response = object(object(payload).response);
   // 원문 오류 메시지는 키/URL을 포함할 수 있으므로 표시하거나 기록하지 않는다.
-  if (response.status === 'NOT_FOUND') return { features: [], truncated: false };
+  if (response.status === 'NOT_FOUND') return { features: [], truncated: false, completeness: mode === 'point' ? 'complete' : 'unknown' };
   if (response.status === 'ERROR') {
     const error = response.error;
     const code = error && typeof error === 'object' && !Array.isArray(error) ? object(error).code : undefined;
@@ -80,20 +83,49 @@ export function parseCadastral(payload: unknown, limit: number): ParcelBatch {
   checkCrs(result.crs); checkCrs(collection.crs);
   // 실증 응답은 crs 필드가 없었다. 고정 서비스의 명시적 crs 요청과 검증된 x/y 순서를 사용한다.
   if (collection.type !== 'FeatureCollection' || !Array.isArray(collection.features) || collection.features.length > limit) throw new ParcelError('지적 응답 형식 또는 건수 상한이 올바르지 않습니다.');
-  const record = object(response.record), page = object(response.page);
-  const count = integer(record.current), total = integer(record.total);
-  if (count !== collection.features.length || total < count || integer(page.current) !== 1 || integer(page.size) !== limit || integer(page.total) < (total ? 1 : 0)) throw new ParcelError('지적 응답 건수·페이지 정보가 일치하지 않습니다.');
+  let truncated = false;
+  let completeness: ParcelBatch['completeness'] = 'unknown';
+  if (mode === 'point') {
+    const record = object(response.record), page = object(response.page);
+    const count = integer(record.current), total = integer(record.total);
+    if (count !== collection.features.length || total < count || integer(page.current) !== 1 || integer(page.size) !== limit || integer(page.total) < (total ? 1 : 0)) throw new ParcelError('지적 응답 건수·페이지 정보가 일치하지 않습니다.');
+    truncated = total > count || integer(page.total) > 1;
+    completeness = truncated ? 'partial' : 'complete';
+  } else {
+    const optionalObject = (value: unknown): Record<string, unknown> => value && typeof value === 'object' && !Array.isArray(value) ? object(value) : {};
+    const optionalInteger = (value: unknown): number | undefined => {
+      if (value === undefined || value === null || value === '') return undefined;
+      try { return integer(value); } catch { return undefined; }
+    };
+    const record = optionalObject(response.record), page = optionalObject(response.page);
+    const count = optionalInteger(record.current), total = optionalInteger(record.total);
+    const currentPage = optionalInteger(page.current), pageSize = optionalInteger(page.size), pages = optionalInteger(page.total);
+    const length = collection.features.length;
+    if ((count !== undefined && count !== length) || (total !== undefined && total < length) ||
+        (currentPage !== undefined && currentPage !== 1) || (pageSize !== undefined && pageSize !== limit) ||
+        (pages !== undefined && pages < (length ? 1 : 0)) ||
+        (total !== undefined && pages !== undefined && (total > 0 ? pages !== Math.ceil(total / limit) : pages > 1))) {
+      throw new ParcelError('BOX 응답 건수·페이지 정보가 서로 모순됩니다.');
+    }
+    truncated = (total !== undefined && total > length) || (pages !== undefined && pages > 1);
+    if (truncated) completeness = 'partial';
+    else if (count !== undefined && total !== undefined && currentPage !== undefined && pageSize !== undefined && pages !== undefined) completeness = 'complete';
+  }
   const unique = new Map<string, ParcelFeature>();
+  let coordinateCount = 0;
   for (const raw of collection.features) {
     const row = object(raw), properties = object(row.properties);
     if (row.type !== 'Feature') throw new ParcelError('지적 Feature 형식이 아닙니다.');
     const id = pnu(properties.pnu);
     const feature = new Feature<ParcelGeometry>({ geometry: geometry(row.geometry), pnu: id, jibun: text(properties.jibun) });
     feature.setId(id);
+    const parsedGeometry = feature.getGeometry();
+    if (parsedGeometry) coordinateCount += parsedGeometry.getFlatCoordinates().length / parsedGeometry.getStride();
+    if (mode === 'box' && coordinateCount > parcelConfig.maxBoxCoordinates) throw new ParcelError('BOX 응답 좌표 수가 메모리 보호 상한을 초과했습니다. 더 확대하세요.');
     if (unique.has(id)) throw new ParcelError('동일 PNU 도형이 중복되어 자동 선택할 수 없습니다.');
     unique.set(id, feature);
   }
-  return { features: [...unique.values()], truncated: total > count || integer(page.total) > 1 };
+  return { features: [...unique.values()], truncated, completeness };
 }
 
 export function validateParcelBox(box: number[]): void {
@@ -101,12 +133,15 @@ export function validateParcelBox(box: number[]): void {
   longitudeLatitude(box.slice(0, 2)); longitudeLatitude(box.slice(2, 4));
   const [west, south, east, north] = box;
   if (west >= east || south >= north || east - west > 180) throw new ParcelError('역전되거나 날짜변경선을 넘는 범위는 조회하지 않습니다.');
-  const area = getArea(new Polygon([[[west, south], [east, south], [east, north], [west, north], [west, south]]]), { projection: 'EPSG:4326' });
-  if (!Number.isFinite(area) || area > parcelConfig.maxAreaSquareMeters) throw new ParcelError('화면 범위가 0.25㎢를 초과합니다. 더 확대하세요.');
+  // 위도선·경도선으로 둘러싸인 실제 전송 BOX의 구면 면적이다. 공부상 면적이 아니다.
+  const radians = Math.PI / 180;
+  const area = 6_371_008.8 ** 2 * (east - west) * radians * (Math.sin(north * radians) - Math.sin(south * radians));
+  if (!Number.isFinite(area) || area > parcelConfig.maxAreaSquareMeters) throw new ParcelError(`화면 범위가 ${parcelConfig.maxAreaSquareMeters / 1_000_000}㎢를 초과합니다. 더 확대하세요.`);
 }
 
 export function createCadastralProvider(apiKey: string, configuredDomain?: string) {
-  async function request(filter: string, limit: number, signal: AbortSignal) {
+  let manualBoxUsed = false;
+  async function request(filter: string, limit: number, signal: AbortSignal, mode: 'point' | 'box' = 'point') {
     if (!apiKey.trim()) throw new ParcelError('V-World 지적 인증키가 없습니다.');
     const parameters = new URLSearchParams({ service: 'data', version: '2.0', request: 'GetFeature',
       data: 'LP_PA_CBND_BUBUN', key: apiKey.trim(), format: 'json', errorFormat: 'json', crs: 'EPSG:4326',
@@ -125,17 +160,23 @@ export function createCadastralProvider(apiKey: string, configuredDomain?: strin
     }
     const payload = await requestCadastralJsonp(parameters, signal);
     if (signal.aborted) throw new DOMException('Invalidated', 'AbortError');
-    return parseCadastral(payload, limit);
+    return parseCadastral(payload, limit, mode);
   }
   return {
     point(coordinate: number[], signal: AbortSignal) {
       const [longitude, latitude] = longitudeLatitude(coordinate);
       return request(`POINT(${longitude} ${latitude})`, parcelConfig.pointResultLimit, signal);
     },
-    box(box: number[], signal: AbortSignal) {
-      if (!parcelConfig.autoBoundaryQueryEnabled) throw new ParcelError('BOX 조회는 실제 검증 전 비활성화되어 있습니다.');
+    box(box: number[], signal: AbortSignal, execution: 'automatic' | 'manual-validation' = 'automatic') {
+      const manual = execution === 'manual-validation' && import.meta.env.DEV;
+      if (execution !== 'automatic' && !manual) throw new ParcelError('수동 BOX 검증은 개발 환경에서만 허용됩니다.');
+      if (!parcelConfig.autoBoundaryQueryEnabled && !manual) throw new ParcelError('BOX 조회는 실제 검증 전 비활성화되어 있습니다.');
+      if (manual) {
+        if (manualBoxUsed) throw new ParcelError('이 검증 인스턴스의 수동 BOX 시도는 이미 사용했습니다. 재시도하지 않습니다.');
+        manualBoxUsed = true;
+      }
       validateParcelBox(box);
-      return request(`BOX(${box[0]},${box[1]},${box[2]},${box[3]})`, parcelConfig.maxFeatures, signal);
+      return request(`BOX(${box[0]},${box[1]},${box[2]},${box[3]})`, parcelConfig.maxFeatures, signal, 'box');
     },
   };
 }

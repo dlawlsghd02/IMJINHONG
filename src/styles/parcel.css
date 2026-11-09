@@ -3,19 +3,50 @@
 .parcel-controls button[aria-pressed="true"] { background: #173855; color: #fff; }
 .parcel-controls p { margin: 6px 0 0; padding: 5px 8px; background: rgba(255,255,255,.94); color: #243747; font-size: 12px; border-radius: 4px; }
 #parcel-panel-host { position: absolute; z-index: 4; right: 76px; top: 16px; width: min(330px, calc(100% - 360px)); max-height: calc(100% - 130px); overflow: auto; }
-.parcel-panel { background: #fff; color: #183245; padding: 12px; border: 1px solid #b1c1cc; border-radius: 8px; box-shadow: 0 3px 12px #0002; font-size: 13px; overflow-wrap: anywhere; }
+.parcel-panel { background: #fff; color: #19383e; padding: 18px; border-radius: 12px; box-shadow: 0 6px 24px #123c4320; font-size: 13px; overflow-wrap: anywhere; }
 .parcel-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.parcel-panel h2 { font-size: 16px; margin: 0; }
-.parcel-panel button { min-height: 44px; padding: 6px 12px; }
+.parcel-panel h2 { font-size: 14px; font-weight: 650; margin: 0; color: #526c71; }
+.parcel-panel button { min-height: 44px; padding: 6px 10px; border: 0; border-radius: 6px; background: #edf3f2; }
 .parcel-panel dl { display: grid; grid-template-columns: minmax(76px, 1fr) 2fr; gap: 6px 8px; margin: 12px 0; }
 .parcel-panel dt { font-weight: 600; }
-.parcel-panel dd { margin: 0; }
+.parcel-panel dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; min-width: 0; }
 .parcel-panel dl > a { grid-column: 1 / -1; }
 .parcel-panel a { display: inline-block; color: #075b99; margin: 4px 0; }
 .parcel-panel p { margin: 8px 0; }
-.parcel-note { border-top: 1px solid #d7e0e7; padding-top: 8px; font-size: 12px; }
+.parcel-identity { padding: 12px 0 18px; }
+.parcel-panel .parcel-lot-number { margin: 0 0 5px; font-size: 28px; font-weight: 750; letter-spacing: -.035em; line-height: 1.2; }
+.parcel-panel .parcel-pnu { margin: 0; font-size: 11px; color: #687e82; font-variant-numeric: tabular-nums; }
+.parcel-panel .parcel-facts { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 10px; margin: 0 0 22px; }
+.parcel-facts > div { min-width: 0; padding: 12px; border-radius: 8px; background: #f1f6f5; }
+.parcel-facts dt { font-size: 11px; font-weight: 500; color: #637c80; margin-bottom: 8px; }
+.parcel-facts dd { font-size: 16px; font-weight: 650; }
+.parcel-prices { margin-bottom: 20px; }
+.parcel-prices h3 { font-size: 12px; font-weight: 600; color: #526c71; margin: 0 0 10px; }
+.parcel-price-card + .parcel-price-card { margin-top: 18px; }
+.parcel-panel .parcel-price-amount { display: flex; justify-content: flex-end; align-items: baseline; flex-wrap: wrap; gap: 6px; margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.parcel-price-amount strong { font-size: clamp(24px, 5vw, 32px); line-height: 1.2; font-weight: 750; letter-spacing: -.04em; color: #123c43; }
+.parcel-price-amount span { font-size: 12px; color: #637c80; }
+.parcel-price-change { text-align: right; font-size: 12px; color: #245b60; font-variant-numeric: tabular-nums; }
+.parcel-price-history { margin: 12px 0; }
+.parcel-price-history summary { cursor: pointer; min-height: 44px; align-content: center; font-weight: 600; }
+.parcel-price-history summary:focus-visible { outline: 3px solid #d98c22; outline-offset: 3px; }
+.parcel-history-table { border-collapse: collapse; width: 100%; table-layout: fixed; font-size: 12px; font-variant-numeric: tabular-nums; }
+.parcel-history-table caption { text-align: left; color: #637c80; font-size: 11px; padding-bottom: 8px; }
+.parcel-history-table th, .parcel-history-table td { padding: 10px 3px; border-bottom: 1px solid #edf3f2; text-align: right; vertical-align: top; }
+.parcel-history-table th:first-child, .parcel-history-table td:first-child { text-align: left; }
+.parcel-history-table small { display: block; color: #687e82; font-size: 10px; line-height: 1.5; margin-top: 4px; }
+.parcel-history-scope { color: #687e82; font-size: 11px; line-height: 1.5; }
+.parcel-panel .parcel-price-basis { margin: 7px 0 0; color: #687e82; font-size: 11px; line-height: 1.6; text-align: right; }
+.parcel-data-details { border-top: 1px solid #e5edeb; padding-top: 10px; color: #526c71; font-size: 12px; }
+.parcel-data-details summary { min-height: 44px; display: list-item; align-content: center; cursor: pointer; font-weight: 600; }
+.parcel-data-details summary:focus-visible { outline: 3px solid #d98c22; outline-offset: 3px; }
+.parcel-data-details dl { padding-top: 8px; border-top: 1px solid #edf3f2; font-size: 11px; }
+.parcel-data-sources a { display: block; }
+.parcel-data-warning { color: #79510f; background: #fff6e7; padding: 8px; border-radius: 6px; }
+.parcel-note { color: #687e82; font-size: 11px; line-height: 1.6; }
 @media (max-width: 900px) {
-  #parcel-panel-host { top: auto; bottom: 98px; left: 10px; right: 10px; width: auto; max-height: min(34vh, 280px); max-height: min(34dvh, 280px); }
+  #parcel-panel-host { top: auto; bottom: 98px; left: 10px; right: 10px; width: auto; max-height: min(44vh, 390px); max-height: min(44dvh, 390px); }
+  .parcel-panel { padding: 14px 16px; }
   #parcel-controls-host { top: 76px; left: 10px; width: min(240px, calc(100% - 80px)); }
 }
 @media (max-height: 500px) {
