@@ -3,7 +3,10 @@ export function createLayout(root: HTMLElement) {
     <div class="app-shell">
       <header class="app-header">
         <div><h1>IMJINHONG</h1><p>전국 공간정보 지도</p></div>
-        <div id="address-search-host"></div>
+        <details class="search-tools" open>
+          <summary>주소 검색</summary>
+          <div id="address-search-host"></div>
+        </details>
         <span class="header-description">대한민국에서 시작하는 공간 탐색</span>
       </header>
       <main class="map-shell" aria-label="전국 지도">
@@ -17,10 +20,13 @@ export function createLayout(root: HTMLElement) {
           <button type="button" data-zoom="1" aria-label="지도 확대" disabled>+</button>
           <button type="button" data-zoom="-1" aria-label="지도 축소" disabled>−</button>
         </div>
-        <div class="layer-controls-stack">
-          <div id="parcel-controls-host"></div>
-          <div id="zoning-controls-host"></div>
-        </div>
+        <details class="layer-controls-stack layer-tools" open>
+          <summary>지도 레이어</summary>
+          <div class="layer-tools-content">
+            <div id="parcel-controls-host"></div>
+            <div id="zoning-controls-host"></div>
+          </div>
+        </details>
         <div id="parcel-panel-host"></div>
         <section class="status-panel" aria-label="지도 상태">
           <p id="map-status" role="status" aria-live="polite">지도 설정 확인 중…</p>
@@ -39,7 +45,14 @@ export function createLayout(root: HTMLElement) {
     if (!element) throw new Error(`화면 요소 누락: ${selector}`);
     return element;
   };
+  const media=window.matchMedia('(max-width: 900px)');
+  const searchTools=get<HTMLDetailsElement>('.search-tools');
+  const layerTools=get<HTMLDetailsElement>('.layer-tools');
+  // UI 접기만 변경하며 지도 레이어·검색·선택 상태를 재설정하지 않는다.
+  const responsive=()=>{searchTools.open=!media.matches;layerTools.open=!media.matches;};
+  responsive();media.addEventListener('change',responsive);
   return {
+    dispose(){media.removeEventListener('change',responsive);},
     target: get<HTMLDivElement>('#map'),
     searchHost: get<HTMLDivElement>('#address-search-host'),
     parcelControlsHost: get<HTMLDivElement>('#parcel-controls-host'),

@@ -16,7 +16,7 @@ import { features } from './features/registry';
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('앱 컨테이너가 없습니다.');
 const ui = createLayout(root);
-const cleanup: Array<() => void> = [];
+const cleanup: Array<() => void> = [() => ui.dispose()];
 let stage: 'configuration' | 'initialization' = 'configuration';
 ui.status.dataset.state = 'normal';
 

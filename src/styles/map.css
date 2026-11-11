@@ -28,3 +28,28 @@
 .basemap-controls button:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
 #hybrid-status { margin: 6px 0 0; color: #943d21; overflow-wrap: anywhere; }
 @media (max-width: 640px) { .basemap-controls [data-map-names] { padding-inline: 6px; } }
+
+.search-tools { flex: 1; min-width: 0; max-width: 600px; }
+.search-tools > summary, .layer-tools > summary { display: none; }
+.layer-tools-content { display: flex; flex-direction: column; gap: 8px; width: 100%; min-width: 0; }
+@media (max-width: 900px) {
+  .app-header { gap: 4px 10px; padding: calc(4px + env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) 4px max(8px, env(safe-area-inset-left)); }
+  .app-header h1 { font-size: 16px; }
+  .app-header > div > p, .header-description { display: none; }
+  .search-tools { flex: 0 1 auto; max-width: 100%; }
+  .search-tools > summary, .layer-tools > summary { display: flex; align-items: center; cursor: pointer; min-width: 44px; min-height: 44px; padding: 6px 10px; font-size: 12px; border: 1px solid #E2E8F0; border-radius: 8px; background: #fff; pointer-events: auto; }
+  .search-tools > summary::after, .layer-tools > summary::after { content: '＋'; margin-left: 8px; }
+  .search-tools[open] > summary::after, .layer-tools[open] > summary::after { content: '−'; }
+  .search-tools[open] { flex-basis: 100%; }
+  .layer-tools-content { gap: 4px; margin-top: 4px; }
+  .basemap-controls { top: 8px; left: max(8px, env(safe-area-inset-left)); padding: 2px; gap: 2px; }
+  .basemap-controls button { min-height: 44px; padding: 4px 7px; font-size: 12px; }
+  .zoom-controls { top: 8px; right: max(8px, env(safe-area-inset-right)); }
+  .coordinate-bar { gap: 4px 8px; padding-top: 4px; padding-bottom: calc(4px + env(safe-area-inset-bottom)); font-size: 10px; }
+  .coordinate-bar #coordinates { flex-basis: auto; order: 0; }
+  .status-panel { bottom: calc(28px + env(safe-area-inset-bottom)); max-height: 18dvh; }
+}
+@media (max-height: 500px) and (max-width: 900px) {
+  .coordinate-bar > span:first-child { display: none; }
+  .status-panel { max-height: 20dvh; }
+}

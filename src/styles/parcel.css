@@ -71,3 +71,38 @@
 .parcel-price-amount strong { font-size: 20px; font-weight: 650; letter-spacing: -.02em; }
 .parcel-price-change { font-size: 11px; }
 .parcel-prices h3 { display: block; line-height: 1.5; margin-bottom: 6px; }
+
+.ownership-controls { pointer-events: auto; width: 100%; color: #0F172A; font-size: 12px; }
+.ownership-controls button { min-height: 44px; padding: 6px 10px; border: 1px solid #E2E8F0; border-radius: 9px; background: #fff; color: inherit; font-weight: 600; }
+.ownership-controls button[aria-pressed="true"] { background: #2563EB; color: #fff; }
+.ownership-controls button:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
+.ownership-controls > div { background: #fffffff2; border-radius: 10px; padding: 10px; margin-top: 4px; max-height: min(40dvh, 280px); overflow: auto; overflow-wrap: anywhere; }
+.ownership-controls p { color: #64748B; margin: 0 0 8px; line-height: 1.5; }
+.ownership-controls ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ownership-controls li { display: flex; align-items: center; gap: 6px; }
+.ownership-controls li span { display: inline-block; width: 14px; height: 14px; flex-shrink: 0; border: 1px solid #64748B; }
+
+.ownership-wms-controls summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.ownership-wms-controls summary::after { content: '＋'; margin-left: auto; }
+.ownership-wms-controls details[open] > summary::after { content: '−'; }
+.ownership-wms-controls small { display: block; color: #64748B; line-height: 1.5; }
+.ownership-wms-controls [data-state="error"] { color: #943d21; }
+@media (max-width: 900px) {
+  .layer-controls-stack { top: 64px; left: max(8px, env(safe-area-inset-left)); width: min(210px, calc(100% - 72px)); max-height: calc(55dvh - 64px); }
+  .layer-tools:not([open]) { width: fit-content; }
+  .ownership-controls > div { padding: 6px 8px; max-height: 25dvh; }
+  .ownership-controls p { margin-bottom: 4px; font-size: 11px; }
+  .ownership-wms-controls > div > [data-state="normal"] { display: none; }
+  #parcel-panel-host { top: auto; left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right)); bottom: calc(28px + env(safe-area-inset-bottom)); max-height: min(40dvh, 390px); overscroll-behavior: contain; }
+  .map-shell:has(.parcel-panel:not([hidden])) .layer-controls-stack { max-height: max(44px, calc(100% - 40dvh - 100px - env(safe-area-inset-bottom))); }
+  .parcel-panel { padding: 12px; }
+  .parcel-panel .parcel-lot-number { font-size: 24px; }
+  .parcel-identity { padding: 8px 0 12px; }
+  .parcel-facts > div { padding: 10px 8px; }
+  .parcel-panel:has(.parcel-history-table) { overflow-wrap: anywhere; }
+}
+@media (max-height: 500px) and (max-width: 900px) {
+  .layer-controls-stack { max-height: calc(65dvh - 64px); }
+  #parcel-panel-host { max-height: 32dvh; }
+  .ownership-controls > div { max-height: 24dvh; }
+}

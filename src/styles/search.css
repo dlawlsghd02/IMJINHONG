@@ -17,3 +17,12 @@
 
 .address-search input, .address-search select { border: 1px solid #E2E8F0; border-radius: 8px; background: #F8FAFC; color: #0F172A; }
 .address-search form button { border: 0; border-radius: 8px; background: #2563EB; color: #fff; padding-inline: 16px; }
+@media (max-width: 900px) {
+  #address-search-host { min-width: 0; width: 100%; }
+  .address-search { padding: 4px 0; }
+  .address-search form { gap: 4px; }
+  .address-search label { min-width: 0; font-size: 11px; }
+  .address-search label:nth-child(2) { min-width: 100px; }
+  .address-search input, .address-search select, .address-search button { min-width: 44px; min-height: 44px; padding: 4px 6px; font-size: 12px; }
+  .address-search-results { max-height: 22dvh; overflow: auto; }
+}

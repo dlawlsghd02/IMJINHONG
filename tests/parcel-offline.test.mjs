@@ -110,7 +110,7 @@ test('UI 배치: 공통 세로 컨테이너에 지적도 다음 용도지역, �
   const layout = await readFile(new URL('../src/ui/layout.ts', import.meta.url), 'utf8');
   const parcelCss = await readFile(new URL('../src/styles/parcel.css', import.meta.url), 'utf8');
   const zoningCss = await readFile(new URL('../src/styles/zoning.css', import.meta.url), 'utf8');
-  assert.match(layout, /class="layer-controls-stack">\s*<div id="parcel-controls-host"><\/div>\s*<div id="zoning-controls-host"><\/div>/);
+  assert.match(layout, /<details class="layer-controls-stack layer-tools" open>\s*<summary>지도 레이어<\/summary>\s*<div class="layer-tools-content">\s*<div id="parcel-controls-host"><\/div>\s*<div id="zoning-controls-host"><\/div>/);
   assert.match(parcelCss, /\.layer-controls-stack\s*\{[^}]*display: flex;[^}]*flex-direction: column/);
   assert.doesNotMatch(zoningCss, /#zoning-controls-host\s*\{[^}]*position: absolute/);
 });

@@ -239,7 +239,7 @@ export const cadastralFeature: MapFeature = {
       }),
       map.on('singleclick', (event) => {
         // 검색 마커 등 다른 기능의 벡터를 누른 경우 필지 요청을 발생시키지 않는다.
-        if (!enabled || map.hasFeatureAtPixel(event.pixel, { layerFilter: (layer) => layer !== boundaryLayer && layer !== selectionLayer })) return;
+        if (!enabled || map.hasFeatureAtPixel(event.pixel, { layerFilter: (layer) => layer !== boundaryLayer && layer !== selectionLayer && !layer.get('ownershipOverlay') })) return;
         void selectAt(event.coordinate.slice());
       }),
     ];
