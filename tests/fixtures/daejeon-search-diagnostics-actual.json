@@ -1,0 +1,957 @@
+{
+  "schema": "imjinhong-search-diagnostics-v1",
+  "query": "대전역",
+  "indexConvention": "zero-based",
+  "limits": {
+    "distanceMeters": 10,
+    "facilityIdentityNotConfirmed": true
+  },
+  "displayGrouping": {
+    "categoryAncestorDistanceMeters": 50,
+    "objectCount": 10,
+    "meaning": "display-only-not-confirmed-facility-identity"
+  },
+  "counts": {
+    "before": 10,
+    "after": 10,
+    "displayed": 5
+  },
+  "candidates": [
+    {
+      "originalIndex": 0,
+      "typeOrder": 0,
+      "searchType": "PLACE",
+      "id": "POI01000000HD4SDZ",
+      "title": "대전역",
+      "parcelAddress": "대전광역시 대덕구 석봉동 388-1",
+      "placeCategory": "철도시설 > 철도/지하철 > 승강장",
+      "originalPoint": {
+        "x": "127.42848771585577",
+        "y": "36.44872354209345"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.42848771585577,
+        "latitude": 36.44872354209345
+      }
+    },
+    {
+      "originalIndex": 1,
+      "typeOrder": 1,
+      "searchType": "PLACE",
+      "id": "POI01000000HD4SE0",
+      "title": "대전역",
+      "parcelAddress": "대전광역시 대덕구 석봉동 388-1",
+      "placeCategory": "철도시설 > 철도/지하철 > 승강장",
+      "originalPoint": {
+        "x": "127.42783050215789",
+        "y": "36.451243056708535"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.42783050215789,
+        "latitude": 36.451243056708535
+      }
+    },
+    {
+      "originalIndex": 2,
+      "typeOrder": 2,
+      "searchType": "PLACE",
+      "id": "POI01000000F2H284",
+      "title": "대전역",
+      "parcelAddress": "대전광역시 대덕구 석봉동 388-1철",
+      "placeCategory": "철도시설 > 철도/지하철 > 승강장",
+      "originalPoint": {
+        "x": "127.42829050671257",
+        "y": "36.4488382241683"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.42829050671257,
+        "latitude": 36.4488382241683
+      }
+    },
+    {
+      "originalIndex": 3,
+      "typeOrder": 3,
+      "searchType": "PLACE",
+      "id": "POI01000000F2H2A6",
+      "title": "대전역",
+      "parcelAddress": "대전광역시 대덕구 석봉동 388-1철",
+      "placeCategory": "철도시설 > 철도/지하철 > 승강장",
+      "originalPoint": {
+        "x": "127.4276301018834",
+        "y": "36.45138179744232"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.4276301018834,
+        "latitude": 36.45138179744232
+      }
+    },
+    {
+      "originalIndex": 4,
+      "typeOrder": 4,
+      "searchType": "PLACE",
+      "id": "POI01000000C072YF",
+      "title": "대전역",
+      "parcelAddress": "대전광역시 동구 삼성동 131-5 철",
+      "placeCategory": "철도시설 > 철도/지하철",
+      "originalPoint": {
+        "x": "127.4315947435959",
+        "y": "36.337502493877665"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.4315947435959,
+        "latitude": 36.337502493877665
+      }
+    },
+    {
+      "originalIndex": 5,
+      "typeOrder": 0,
+      "searchType": "ROAD",
+      "id": "3011011900100010001",
+      "title": "대전역",
+      "roadAddress": "대전광역시 동구 중앙로 215 (정동)",
+      "parcelAddress": "정동 1-1",
+      "originalPoint": {
+        "x": "127.43173212930569",
+        "y": "36.33595109783886"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.43173212930569,
+        "latitude": 36.33595109783886
+      }
+    },
+    {
+      "originalIndex": 6,
+      "typeOrder": 1,
+      "searchType": "ROAD",
+      "id": "3011011900100010001",
+      "title": "대전역",
+      "roadAddress": "대전광역시 동구 중앙로 215 (정동)",
+      "parcelAddress": "정동 1-1",
+      "originalPoint": {
+        "x": "127.43286524507809",
+        "y": "36.33292877689193"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.43286524507809,
+        "latitude": 36.33292877689193
+      }
+    },
+    {
+      "originalIndex": 7,
+      "typeOrder": 2,
+      "searchType": "ROAD",
+      "id": "3011011900100010001",
+      "title": "대전역",
+      "roadAddress": "대전광역시 동구 중앙로 215 (정동)",
+      "parcelAddress": "정동 1-1",
+      "originalPoint": {
+        "x": "127.43547157376966",
+        "y": "36.329227650236774"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.43547157376966,
+        "latitude": 36.329227650236774
+      }
+    },
+    {
+      "originalIndex": 8,
+      "typeOrder": 3,
+      "searchType": "ROAD",
+      "id": "3011011900100010001",
+      "title": "대전역",
+      "roadAddress": "대전광역시 동구 중앙로 215 (정동)",
+      "parcelAddress": "정동 1-1",
+      "originalPoint": {
+        "x": "127.4322307151115",
+        "y": "36.33363623843982"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.4322307151115,
+        "latitude": 36.33363623843982
+      }
+    },
+    {
+      "originalIndex": 9,
+      "typeOrder": 4,
+      "searchType": "ROAD",
+      "id": "3011011900100010001",
+      "title": "대전역",
+      "roadAddress": "대전광역시 동구 중앙로 215 (정동)",
+      "parcelAddress": "정동 1-1",
+      "originalPoint": {
+        "x": "127.43582051424417",
+        "y": "36.32871824077171"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.43582051424417,
+        "latitude": 36.32871824077171
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 1,
+      "distanceMeters": 286.2581520060925,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "different-ids",
+      "objectMergeAllowed": false,
+      "objectReason": "different-ids",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 2,
+      "distanceMeters": 21.76594176736228,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 305.37589120883916,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 12370.359874943379,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 12543.103230613346,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 12881.768993221605,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 13302.053111902414,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 12801.52695339583,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 13360.132845053673,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 2,
+      "distanceMeters": 270.55231370026803,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 23.64892626747735,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 12651.878027538283,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 12824.654332366246,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 13163.68216825093,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 13584.741894902247,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 13083.229300804123,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 13642.916019722144,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 288.9350624363336,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "different-ids",
+      "objectMergeAllowed": false,
+      "objectReason": "different-ids",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 12383.51773776666,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 12556.272566952592,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 12895.063658124036,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 13315.631588317896,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 12814.748343949233,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 13373.747595343857,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 12667.789623708362,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 12840.576276197717,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 13179.725975302415,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 13601.06352837089,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 13099.201221806597,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 13659.273137611279,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 172.94598433933137,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 521.1524813157845,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 983.475405132419,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 433.6664629112423,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 1047.5487131566172,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 5,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 351.0603185573169,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 5,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 819.2269840087741,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 5,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 261.24674897395266,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 5,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 883.7167791389742,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 6,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 473.16062355296253,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 6,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 97.05196164895688,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 6,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 537.8531644656532,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 7,
+      "rightOriginalIndex": 8,
+      "distanceMeters": 569.7288090737367,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 7,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 64.6964750154497,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 8,
+      "rightOriginalIndex": 9,
+      "distanceMeters": 634.3984415207689,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    }
+  ],
+  "groups": [
+    {
+      "groupIndex": 0,
+      "originalIndices": [
+        0
+      ],
+      "representativeOriginalIndex": 0,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 0,
+          "exactMatch": true,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 1,
+      "originalIndices": [
+        1
+      ],
+      "representativeOriginalIndex": 1,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 1,
+          "exactMatch": true,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 2,
+      "originalIndices": [
+        2
+      ],
+      "representativeOriginalIndex": 2,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 2,
+          "exactMatch": true,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "originalIndices": [
+        3
+      ],
+      "representativeOriginalIndex": 3,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 3,
+          "exactMatch": true,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 4,
+      "originalIndices": [
+        4
+      ],
+      "representativeOriginalIndex": 4,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 4,
+          "exactMatch": true,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 5,
+      "originalIndices": [
+        5
+      ],
+      "representativeOriginalIndex": 5,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 5,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    },
+    {
+      "groupIndex": 6,
+      "originalIndices": [
+        6
+      ],
+      "representativeOriginalIndex": 6,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 6,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    },
+    {
+      "groupIndex": 7,
+      "originalIndices": [
+        7
+      ],
+      "representativeOriginalIndex": 7,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 7,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    },
+    {
+      "groupIndex": 8,
+      "originalIndices": [
+        8
+      ],
+      "representativeOriginalIndex": 8,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 8,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    },
+    {
+      "groupIndex": 9,
+      "originalIndices": [
+        9
+      ],
+      "representativeOriginalIndex": 9,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 9,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    }
+  ],
+  "failedSearchTypes": [],
+  "hasMoreOnServer": true
+}

@@ -1,0 +1,787 @@
+{
+  "schema": "imjinhong-search-diagnostics-v1",
+  "query": "전주시청",
+  "indexConvention": "zero-based",
+  "limits": {
+    "distanceMeters": 10,
+    "facilityIdentityNotConfirmed": true
+  },
+  "displayGrouping": {
+    "categoryAncestorDistanceMeters": 50,
+    "objectCount": 8,
+    "meaning": "display-only-not-confirmed-facility-identity",
+    "positionConflicts": [
+      {
+        "representativeOriginalIndex": 0,
+        "conflictingSourceIndices": [
+          6,
+          7
+        ],
+        "representativeConfidence": "unverified-original-api-position"
+      },
+      {
+        "representativeOriginalIndex": 4,
+        "conflictingSourceIndices": [
+          6
+        ],
+        "representativeConfidence": "unverified-original-api-position"
+      },
+      {
+        "representativeOriginalIndex": 6,
+        "conflictingSourceIndices": [
+          0,
+          4,
+          5,
+          7
+        ],
+        "representativeConfidence": "unverified-original-api-position"
+      },
+      {
+        "representativeOriginalIndex": 7,
+        "conflictingSourceIndices": [
+          5,
+          6
+        ],
+        "representativeConfidence": "unverified-original-api-position"
+      }
+    ]
+  },
+  "counts": {
+    "before": 8,
+    "after": 7,
+    "displayed": 5
+  },
+  "rankedGroups": [
+    {
+      "rank": 0,
+      "representativeOriginalIndex": 1,
+      "ranking": {
+        "exactQuery": 1,
+        "nameMatch": 2,
+        "categoryIntent": 0,
+        "stablePosition": 1,
+        "addressCompleteness": 2,
+        "crossTypeAgreement": 0
+      }
+    },
+    {
+      "rank": 1,
+      "representativeOriginalIndex": 2,
+      "ranking": {
+        "exactQuery": 1,
+        "nameMatch": 2,
+        "categoryIntent": 0,
+        "stablePosition": 1,
+        "addressCompleteness": 2,
+        "crossTypeAgreement": 0
+      }
+    },
+    {
+      "rank": 2,
+      "representativeOriginalIndex": 3,
+      "ranking": {
+        "exactQuery": 1,
+        "nameMatch": 2,
+        "categoryIntent": 0,
+        "stablePosition": 1,
+        "addressCompleteness": 1,
+        "crossTypeAgreement": 0
+      }
+    },
+    {
+      "rank": 3,
+      "representativeOriginalIndex": 0,
+      "ranking": {
+        "exactQuery": 1,
+        "nameMatch": 2,
+        "categoryIntent": 0,
+        "stablePosition": 0,
+        "addressCompleteness": 2,
+        "crossTypeAgreement": 0
+      }
+    },
+    {
+      "rank": 4,
+      "representativeOriginalIndex": 4,
+      "ranking": {
+        "exactQuery": 1,
+        "nameMatch": 2,
+        "categoryIntent": 0,
+        "stablePosition": 0,
+        "addressCompleteness": 2,
+        "crossTypeAgreement": 0
+      }
+    },
+    {
+      "rank": 5,
+      "representativeOriginalIndex": 6,
+      "ranking": {
+        "exactQuery": 1,
+        "nameMatch": 2,
+        "categoryIntent": 0,
+        "stablePosition": 0,
+        "addressCompleteness": 1,
+        "crossTypeAgreement": 0
+      }
+    },
+    {
+      "rank": 6,
+      "representativeOriginalIndex": 7,
+      "ranking": {
+        "exactQuery": 1,
+        "nameMatch": 2,
+        "categoryIntent": 0,
+        "stablePosition": 0,
+        "addressCompleteness": 1,
+        "crossTypeAgreement": 0
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "originalIndex": 0,
+      "typeOrder": 0,
+      "searchType": "PLACE",
+      "id": "POI01000000BZTWD8",
+      "title": "전주시청",
+      "roadAddress": "전북특별자치도 전주시 완산구 노송광장로 10",
+      "parcelAddress": "전북특별자치도 전주시 완산구 서노송동 568-1",
+      "placeCategory": "지방행정기관",
+      "originalPoint": {
+        "x": "127.14782445148437",
+        "y": "35.824307653725654"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14782445148437,
+        "latitude": 35.824307653725654
+      }
+    },
+    {
+      "originalIndex": 1,
+      "typeOrder": 1,
+      "searchType": "PLACE",
+      "id": "POI01000000HZYWAG",
+      "title": "전주시청",
+      "roadAddress": "전북특별자치도 전주시 완산구 경원동3가 팔달로 212-9",
+      "parcelAddress": "전북특별자치도 전주시 완산구 경원동3가 33-3",
+      "placeCategory": "통신판매업 > 전자상거래소매업 > 레저/여행/공연통신판매업",
+      "originalPoint": {
+        "x": "127.14700530020716",
+        "y": "35.82155301954452"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14700530020716,
+        "latitude": 35.82155301954452
+      }
+    },
+    {
+      "originalIndex": 2,
+      "typeOrder": 2,
+      "searchType": "PLACE",
+      "id": "POI01000000M6LP42",
+      "title": "전주시청",
+      "roadAddress": "전북특별자치도 전주시 완산구 완산5길 70",
+      "parcelAddress": "전북특별자치도 전주시 완산구 동완산동 121-33",
+      "placeCategory": "예술품,기념품및장식용품소매업 > 기념품,관광민예품및장식용품소매업 > 기념품점",
+      "originalPoint": {
+        "x": "127.14233279994613",
+        "y": "35.806373795595746"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14233279994613,
+        "latitude": 35.806373795595746
+      }
+    },
+    {
+      "originalIndex": 3,
+      "typeOrder": 3,
+      "searchType": "PLACE",
+      "id": "POI01000000M22CQO",
+      "title": "전주시청",
+      "parcelAddress": "전북특별자치도 전주시 완산구 서노송동 568-131",
+      "placeCategory": "운송장비용연료소매업 > 전기차충전소",
+      "originalPoint": {
+        "x": "127.14887890928622",
+        "y": "35.823748630946476"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14887890928622,
+        "latitude": 35.823748630946476
+      }
+    },
+    {
+      "originalIndex": 4,
+      "typeOrder": 4,
+      "searchType": "PLACE",
+      "id": "POI01000000J6D2BB",
+      "title": "전주시청",
+      "roadAddress": "전북특별자치도 전주시 완산구 노송광장로 10",
+      "parcelAddress": "전북특별자치도 전주시 완산구 서노송동 568-1",
+      "placeCategory": "토목건설업 > 대기오염물질배출시설설치사업장",
+      "originalPoint": {
+        "x": "127.14805000027269",
+        "y": "35.824171002836614"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14805000027269,
+        "latitude": 35.824171002836614
+      }
+    },
+    {
+      "originalIndex": 5,
+      "typeOrder": 0,
+      "searchType": "ROAD",
+      "id": "5211114700105680001",
+      "title": "전주시청",
+      "roadAddress": "전북특별자치도 전주시 완산구 노송광장로 10 (서노송동)",
+      "parcelAddress": "서노송동 568-1",
+      "originalPoint": {
+        "x": "127.14782536282036",
+        "y": "35.82452852527804"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14782536282036,
+        "latitude": 35.82452852527804
+      }
+    },
+    {
+      "originalIndex": 6,
+      "typeOrder": 1,
+      "searchType": "ROAD",
+      "id": "5211114700105680001",
+      "title": "전주시청",
+      "roadAddress": "전북특별자치도 전주시 완산구 노송광장로 10 (서노송동)",
+      "parcelAddress": "서노송동 568-1",
+      "originalPoint": {
+        "x": "127.14753448622048",
+        "y": "35.824757834845286"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14753448622048,
+        "latitude": 35.824757834845286
+      }
+    },
+    {
+      "originalIndex": 7,
+      "typeOrder": 2,
+      "searchType": "ROAD",
+      "id": "5211114700105680001",
+      "title": "전주시청",
+      "roadAddress": "전북특별자치도 전주시 완산구 노송광장로 10 (서노송동)",
+      "parcelAddress": "서노송동 568-1",
+      "originalPoint": {
+        "x": "127.14804411736532",
+        "y": "35.824094257074556"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.14804411736532,
+        "latitude": 35.824094257074556
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 1,
+      "distanceMeters": 315.0798622459507,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "unconfirmed-category-relationship",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 2,
+      "distanceMeters": 2054.7166942855656,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "unconfirmed-category-relationship",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 113.58710555023261,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "unconfirmed-category-relationship",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 25.38514721296873,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "independent-facility-or-entrance",
+      "objectMergeAllowed": false,
+      "objectReason": "different-ids",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 24.559967429269935,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": true,
+      "mergedInResult": true,
+      "reason": "display-same-name-road-nearby",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 56.47338189875045,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-address-position-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 30.907604222461437,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": true,
+      "mergedInResult": false,
+      "reason": "display-same-name-road-nearby",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "groupConstraint": "complete-link-group-constraint",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 2,
+      "distanceMeters": 1739.6454682268995,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "unconfirmed-category-relationship",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 296.8851761574746,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "unconfirmed-category-relationship",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 305.9657808413053,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "independent-facility-or-entrance",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 339.0222291848735,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 359.5394431939311,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 297.69075981235966,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 2020.1517864920543,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "unconfirmed-category-relationship",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 2045.0048578834474,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "independent-facility-or-entrance",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 2078.580498397369,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 2097.332104636884,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 2036.6137042012338,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 4,
+      "distanceMeters": 88.26606971561986,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "independent-facility-or-entrance",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 128.61913322102234,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 165.18240541166455,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 84.50858610217108,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "display-insufficient-evidence",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": true
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 44.616404160748374,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "independent-facility-or-entrance",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 80.11326586817556,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "independent-facility-or-entrance",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 4,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 8.550218092858952,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "independent-facility-or-entrance",
+      "objectMergeAllowed": false,
+      "objectReason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 5,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 36.5773247969908,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 5,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 52.16090481854479,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 6,
+      "rightOriginalIndex": 7,
+      "distanceMeters": 86.92320282935079,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "objectMergeAllowed": false,
+      "objectReason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    }
+  ],
+  "groups": [
+    {
+      "groupIndex": 0,
+      "originalIndices": [
+        0,
+        5
+      ],
+      "representativeOriginalIndex": 0,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 0,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 0
+        },
+        {
+          "originalIndex": 5,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    },
+    {
+      "groupIndex": 1,
+      "originalIndices": [
+        1
+      ],
+      "representativeOriginalIndex": 1,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 1,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 2,
+      "originalIndices": [
+        2
+      ],
+      "representativeOriginalIndex": 2,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 2,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "originalIndices": [
+        3
+      ],
+      "representativeOriginalIndex": 3,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 3,
+          "exactMatch": true,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 4,
+      "originalIndices": [
+        4
+      ],
+      "representativeOriginalIndex": 4,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 4,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 5,
+      "originalIndices": [
+        6
+      ],
+      "representativeOriginalIndex": 6,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 6,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    },
+    {
+      "groupIndex": 6,
+      "originalIndices": [
+        7
+      ],
+      "representativeOriginalIndex": 7,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 7,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    }
+  ],
+  "failedSearchTypes": [],
+  "hasMoreOnServer": true
+}

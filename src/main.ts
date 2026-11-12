@@ -38,6 +38,13 @@ try {
   cleanup.push(() => basemaps.dispose());
   const instance = createMap(ui.target, basemaps.layers);
   cleanup.push(() => instance.dispose());
+  if (import.meta.env.DEV) {
+    let disposed = false;
+    cleanup.push(() => { disposed = true; });
+    void import('./dev/mapExtentCopy').then(({ mountMapExtentCopy }) => {
+      if (!disposed) cleanup.push(mountMapExtentCopy(instance.map, ui.parcelControlsHost));
+    }).catch(() => { /* 개발 진단 실패가 지도 초기화를 방해하지 않는다. */ });
+  }
   cleanup.push(bindMapControls(root, instance.map, (id) => basemaps.select(id), (enabled) => basemaps.setNamesEnabled(enabled)));
   cleanup.push(bindCoordinateDisplay(instance.map, ui.basis, ui.coordinates));
   // Optional feature initialization must not tear down a working map.

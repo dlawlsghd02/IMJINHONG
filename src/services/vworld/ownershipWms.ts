@@ -6,7 +6,7 @@ export function ownershipWmsUrl(key:string,domain:string|undefined,bbox:readonly
   if(!key.trim())throw Error('소유정보 WMS 인증 설정 없음');
   if(bbox.length!==4||bbox.some(n=>!Number.isFinite(n)||Math.abs(n)>20_037_509)
     ||bbox[0]>=bbox[2]||bbox[1]>=bbox[3])throw Error('소유정보 WMS 범위 오류');
-  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width>512||height>512)throw Error('소유정보 WMS 크기 오류');
+  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width>1024||height>1024)throw Error('소유정보 WMS 크기 오류');
   if(domain){
     let valid=false;
     try{const u=new URL(domain);valid=['http:','https:'].includes(u.protocol)&&!u.username&&!u.password&&!u.hash&&!/\s/.test(domain);}catch{/* 원문 출력 금지 */}
@@ -36,7 +36,7 @@ export function createOwnershipWms(map:Map,key:string,domain:string|undefined,no
     if(map.getView().getProjection().getCode()!=='EPSG:3857'){notify('소유정보 WMS 좌표계 오류');return;}
     const size=map.getSize();
     if(!size||size.some(n=>!Number.isFinite(n)||n<=0)){notify('소유정보 WMS 지도 크기 확인 대기');return;}
-    const bbox=map.getView().calculateExtent(size),scale=Math.min(1,512/Math.max(...size));
+    const bbox=map.getView().calculateExtent(size),scale=Math.min(1,1024/Math.max(...size));
     let url:string;
     try{url=ownershipWmsUrl(key,domain,bbox,Math.max(1,Math.round(size[0]*scale)),Math.max(1,Math.round(size[1]*scale)));}
     catch{notify('소유정보 WMS 설정 또는 범위 오류');return;}

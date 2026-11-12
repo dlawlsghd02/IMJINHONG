@@ -1,4 +1,5 @@
 import { landUseNotices } from '../services/vworld/landUse';
+import { renderParcelRegulations } from './parcelRegulations';
 import type { LandUseState } from '../services/vworld/landUse';
 import type { LandLedger } from '../services/vworld/landLedger';
 import type { LandPriceBatch } from '../services/vworld/landPrice';
@@ -91,6 +92,8 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
       const identifier = document.createElement('p'); identifier.className = 'parcel-pnu'; identifier.textContent = `PNU ${id}`;
       base.append(lot, identifier);
       message(landUse, '용도지역 조회 중…');
+      const pendingRegulations = document.createElement('div');
+      renderParcelRegulations(pendingRegulations, {status:'loading', message:''}); landUse.append(pendingRegulations);
       message(ledger, '토지정보 불러오는 중…'); message(price, priceYear === undefined ? '최신 가용 공시지가 확인 중…' : `${priceYear}년 공시지가 불러오는 중…`);
     },
     renderLedger(state: AttributeState<LandLedger>) {
@@ -102,12 +105,17 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
         field(area, '공부상 면적', value.registeredArea === null ? '미제공' : `${value.registeredArea.toLocaleString('ko-KR')} ㎡`);
 
         list.append(category, area); ledger.append(list);
+        const ownership = document.createElement('dl'); ownership.className = 'parcel-facts parcel-ownership';
+        const owner = document.createElement('div');
+        field(owner, '소유구분', value.ownershipName ?? '미확인');
+        ownership.append(owner); ledger.append(ownership);
       } else { message(ledger, state.message); }
     },
     renderLandUse(state: LandUseState) {
       landUse.replaceChildren();
       const title = document.createElement('p'); title.textContent = '용도지역'; landUse.append(title);
-      if (state.status !== 'ok') { const notice = document.createElement('p'); notice.textContent = state.message; landUse.append(notice); return; }
+      const regulations = document.createElement('div'); renderParcelRegulations(regulations, state);
+      if (state.status !== 'ok') { const notice = document.createElement('p'); notice.textContent = state.message; landUse.append(notice, regulations); return; }
       for (const item of state.value.summary) {
         const line = document.createElement('p'); line.className = 'parcel-zoning-line';
         const name = document.createElement('span'); name.className = 'parcel-zoning-name'; name.textContent = item.name;
@@ -122,6 +130,7 @@ export function createParcelPanel(onToggle: () => void, onClose: () => void) {
         notice.textContent = unconfirmed ? '일부 항목 미확인' : value;
         landUse.append(notice);
       }
+      landUse.append(regulations);
     },
     renderPrice(state: AttributeState<LandPriceBatch>, historyState?: PriceHistorySnapshot) {
       price.replaceChildren();

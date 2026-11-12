@@ -19,12 +19,32 @@ const api = await bundle(`
   export { parcelConfig } from './src/config/parcel';
   export { ParcelError } from './src/services/vworld/parcelValidation';
   export { createParcelPanel } from './src/ui/parcelPanel';
+  export { parseLandLedger } from './src/services/vworld/landLedger';
   export { priceStatistics } from './src/features/landPriceHistory';
   export { default as Feature } from 'ol/Feature.js';
   export { default as Polygon } from 'ol/geom/Polygon.js';
   export { transform, transformExtent } from 'ol/proj.js';
 `);
 const id = '1114010300100310000'; // 테스트 전용 공개 형식 식별자. 실제 조회하지 않는다.
+
+function ownershipLedger(extra = {}) {
+ return api.parseLandLedger({ladfrlVOList:{totalCount:'1',resultCode:'00',field:[{pnu:id,lndcgrCode:'08',lndcgrCodeNm:'대',lndpclAr:'1674.9',lastUpdtDt:'2026-10-22',...extra}]}},id);
+}
+test('소유구분: 실측 형식·앞자리 0·허용 필드만 추출',()=>{
+ const v=ownershipLedger({posesnSeCode:'01',posesnSeCodeNm:'개인',cnrsPsnCo:'4',privateName:'DO_NOT_KEEP'}).value;
+ assert.equal(v.ownershipCode,'01');assert.equal(v.ownershipName,'개인');assert.equal(v.coOwnerCount,4);
+ assert.equal(v.updatedAt,'2026-10-22');assert.equal(v.registeredArea,1674.9);assert.equal('privateName' in v,false);
+});
+test('소유구분: 누락·코드만·명칭만·예상 외 코드는 원본 유지',()=>{
+ for(const [extra,code,name] of [[{},null,null],[{posesnSeCode:'01'},'01',null],[{posesnSeCodeNm:'기타'},null,'기타'],[{posesnSeCode:'ZZ',posesnSeCodeNm:'원본명칭'},'ZZ','원본명칭']]){
+  const v=ownershipLedger(extra).value;assert.equal(v.ownershipCode,code);assert.equal(v.ownershipName,name);
+  assert.equal(v.landCategoryName,'대');assert.equal(v.registeredArea,1674.9);
+ }
+});
+test('공유인수: 잘못된 값은 미확인, 0 포함 정수만 허용',()=>{
+ for(const value of [undefined,null,'',' ','abc','-1',-1,'1.5',1.5,Infinity,'9007199254740992',{},true]) assert.equal(ownershipLedger({cnrsPsnCo:value}).value.coOwnerCount,null);
+ for(const value of [0,'0',4,'4']) assert.equal(ownershipLedger({cnrsPsnCo:value}).value.coOwnerCount,Number(value));
+});
 const ring = [[126.977, 37.566], [126.978, 37.566], [126.978, 37.567], [126.977, 37.567], [126.977, 37.566]];
 function response(overrides = {}) {
   return { response: { status: 'OK', record: { current: '1', total: '1' }, page: { current: '1', size: '1000', total: '1' },
@@ -224,8 +244,14 @@ class ElementMock {
 globalThis.document = { createElement: () => new ElementMock() };
 const deferred = () => { let resolve; const promise = new Promise((done) => { resolve = done; }); return { promise, resolve }; };
 globalThis.parcelOfflineMocks = { calls: [], point: undefined };
-const mounted = await bundle(`export { cadastralFeature } from './src/features/cadastral';`, [{
+const mounted = await bundle(`export { cadastralFeature } from './src/features/cadastral'; export {subscribeOwnership} from './src/features/ownership';`, [{
   name: 'offline-provider', setup(builder) {
+    builder.onLoad({filter:/[/\\]services[/\\]vworld[/\\]landLedger\.ts$/},()=>({loader:'ts',contents:`
+      export function loadLandLedger(id,auth,signal){
+        const m=globalThis.parcelOfflineMocks;
+        if(!m.ledgerCalls)return Promise.resolve({status:'error',message:'offline'});
+        return new Promise(resolve=>m.ledgerCalls.push({id,signal,resolve}));
+      }`}));
     builder.onLoad({ filter: /[/\\]services[/\\]vworld[/\\]landUse\.ts$/ }, async ({ path }) => {
       // Keep the real pure notice function; only replace the network loader.
       const source = await readFile(path, 'utf8');
@@ -262,7 +288,7 @@ function setupMap() {
   const controls = new ElementMock(), details = new ElementMock();
   globalThis.parcelOfflineMocks.calls = []; globalThis.parcelOfflineMocks.landUseCalls = []; globalThis.parcelOfflineMocks.point = deferred();
   const dispose = mounted.cadastralFeature.mount({ map, parcelControlsHost: controls, parcelPanelHost: details, vworldApiKey: '', searchHost: new ElementMock() });
-  return { layers, dispose, setZoom: (value) => { zoom = value; }, fire: (type, event) => handlers.get(type)?.(event),
+  return { map, layers, dispose, setZoom: (value) => { zoom = value; }, fire: (type, event) => handlers.get(type)?.(event),
     toggle: () => controls.children[0].children[0].click(),
     close: () => details.children[0].children[0].children[1].click(),
     panel: details.children[0], status: controls.children[0].children[1], boundaryStatus: controls.children[0].children[2] };
@@ -1087,4 +1113,37 @@ test('필지 UI 개편: 지번 대체·2열 기본정보·독립 전체너비 �
  assert.match(panelText(facts),/2,659.7/);
  ui.showSelection(id,null);assert.match(panelText(ui.panel),/지번 미제공/);
  ui.dispose();
+});
+
+test('소유정보 UI: 값 표시·누락 대체·새 선택 및 닫기 초기화',()=>{
+ const ui=api.createParcelPanel(()=>{},()=>{});ui.showSelection(id,'139-3');
+ ui.renderLedger(ownershipLedger({posesnSeCode:'01',posesnSeCodeNm:'개인',cnrsPsnCo:'4'}));
+ assert.match(panelText(byClass(ui.panel,'parcel-ownership')[0]),/소유구분\s+개인/);
+ assert.equal(byClass(ui.panel,'parcel-ownership')[0].children.length,1);
+ assert.doesNotMatch(panelText(ui.panel),/공유인수/);
+ assert.doesNotMatch(panelText(byClass(ui.panel,'parcel-ownership')[0]),/(?:^|\s)4(?:\s|$)/);
+ ui.renderLedger(ownershipLedger());assert.match(panelText(byClass(ui.panel,'parcel-ownership')[0]),/소유구분\s+미확인/);
+ assert.equal(byClass(ui.panel,'parcel-ownership')[0].children.length,1);
+ assert.doesNotMatch(panelText(ui.panel),/공유인수/);
+ ui.showSelection(id,'새 필지');assert.equal(byClass(ui.panel,'parcel-ownership').length,0);
+ ui.renderLedger(ownershipLedger({posesnSeCodeNm:'기타',cnrsPsnCo:0}));assert.match(panelText(byClass(ui.panel,'parcel-ownership')[0]),/소유구분\s+기타/);
+ assert.equal(byClass(ui.panel,'parcel-ownership')[0].children.length,1);
+ assert.doesNotMatch(panelText(ui.panel),/공유인수/);
+ assert.doesNotMatch(panelText(byClass(ui.panel,'parcel-ownership')[0]),/(?:^|\s)0(?:\s|$)/);
+ ui.clear();assert.equal(byClass(ui.panel,'parcel-ownership').length,0);ui.dispose();
+});
+
+test('선택 소유정보 연결: 기존 응답 재사용·선택 변경/닫기/OFF·늦은 응답 차단',async()=>{
+ const ui=setupMap(),states=[];const stop=mounted.subscribeOwnership(ui.map,v=>states.push(v));
+ parcelOfflineMocks.ledgerCalls=[];
+ const ledger={status:'ok',value:{pnu:id,landCategoryName:'대',registeredArea:1674.9,ownershipCode:'01',ownershipName:'개인',coOwnerCount:4}};
+ ui.toggle();ui.fire('singleclick',click());parcelOfflineMocks.point.resolve(selectionBatch());await tick();
+ parcelOfflineMocks.ledgerCalls[0].resolve(ledger);await tick();assert.equal(states.at(-1).status,'ready');
+ assert.equal(states.at(-1).items[0].ownership.ownershipCode,'01');assert.equal(ui.layers[1].getSource().getFeatures().length,1);
+ parcelOfflineMocks.point=deferred();const next=click();next.coordinate[0]+=1;ui.fire('singleclick',next);assert.equal(states.at(-1).status,'not-loaded');
+ parcelOfflineMocks.point.resolve(selectionBatch());await tick();const late=parcelOfflineMocks.ledgerCalls[1];ui.close();
+ late.resolve(ledger);await tick();assert.equal(states.at(-1).status,'not-loaded');
+ parcelOfflineMocks.point=deferred();ui.fire('singleclick',click());parcelOfflineMocks.point.resolve(selectionBatch());await tick();
+ parcelOfflineMocks.ledgerCalls[2].resolve({status:'error',message:'offline failure'});await tick();assert.equal(states.at(-1).status,'error');
+ ui.toggle();assert.equal(states.at(-1).status,'not-loaded');stop();ui.dispose();delete parcelOfflineMocks.ledgerCalls;
 });

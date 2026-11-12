@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises';
 globalThis.fetch = () => { throw new Error('외부 통신 금지'); };
 const root = fileURLToPath(new URL('../', import.meta.url));
 async function bundle(contents, plugins = []) {
-  const result = await build({ stdin: { contents, resolveDir: root, loader: 'ts' }, bundle: true, platform: 'node', format: 'esm', write: false, plugins });
+  const result = await build({ stdin: { contents, resolveDir: root, loader: 'ts' }, loader: { '.png': 'dataurl' }, bundle: true, platform: 'node', format: 'esm', write: false, plugins });
   return import(`data:text/javascript;base64,${Buffer.from(result.outputFiles[0].text).toString('base64')}`);
 }
 const api = await bundle(`export * from './src/services/vworld/zoningWms'; export { createZoningControls } from './src/ui/zoningControls';`);
@@ -15,6 +15,7 @@ class Element {
   children = []; attributes = new Map(); listeners = new Map(); textContent = ''; hidden = false; removed = false;
   append(...nodes) { this.children.push(...nodes); }
   setAttribute(key, value) { this.attributes.set(key, value); }
+  removeAttribute(key) { this.attributes.delete(key); }
   addEventListener(type, callback) { this.listeners.set(type, callback); }
   removeEventListener(type) { this.listeners.delete(type); }
   remove() { this.removed = true; }
@@ -29,7 +30,7 @@ const media = { matches: false, listeners: new Set(),
   change(value) { this.matches = value; for (const fn of this.listeners) fn({ matches: value }); },
 };
 globalThis.window = { matchMedia: () => media };
-const kindLabels = (options) => options.children.filter((node) => node.className === 'zoning-kind');
+const kindLabels = (options) => options.children.filter((node) => node.className === 'zoning-group-row').map((row) => row.children[0]);
 
 test('WMS: 검증된 네 레이어와 스타일을 같은 순서로 구성', () => {
   assert.deepEqual(api.zoningLayers.map((v) => v.id), ['lt_c_uq111', 'lt_c_uq112', 'lt_c_uq113', 'lt_c_uq114']);
@@ -162,6 +163,17 @@ test('모바일 CSS·오류 분류: 2열·전체 너비·줄바꿈·스크롤·4
   assert.match(zoning, /grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1fr\)/);
   assert.match(zoning, /zoning-opacity\s*\{[^}]*grid-column: 1 \/ -1/);
   assert.match(zoning, /overflow-wrap: anywhere/); assert.match(zoning, /overflow: auto/); assert.match(zoning, /24dvh/);
+  assert.match(zoning, /max-width: 280px/);
+  assert.match(zoning, /max-height: 35dvh/);
+  assert.match(zoning, /max-height: 30dvh/);
+  assert.match(zoning, /overscroll-behavior: contain/);
+  assert.match(zoning, /fieldset\s*\{ display: block/);
+  assert.match(zoning, /zoning-group-row\s*\{ display: flex/);
+  assert.match(zoning, /zoning-details-toggle\s*\{[^}]*min-height: 28px;[^}]*padding: 3px 6px/);
+  assert.match(zoning, /zoning-details-toggle\s*\{[^}]*min-height: 44px;[^}]*background-clip: padding-box/);
+  assert.match(zoning, /pointer: coarse/);
+  assert.match(zoning, /zoning-legend-panel\s*\{[^}]*max-height: none; overflow: visible/);
+  assert.match(zoning, /fieldset\s*\{[^}]*max-height: none; overflow: visible/);
   for (const css of [zoning, parcel, map]) assert.match(css, /min-height: 44px/);
   assert.match(map, /data-state="normal".*:not\(:has\(\.feature-init-warning\)\)/);
   assert.match(main, /failures \? 'error' : 'normal'/); assert.match(main, /ui.status.dataset.state = 'error'/); assert.match(main, /notice.className = 'feature-init-warning'/);

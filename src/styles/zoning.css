@@ -1,8 +1,10 @@
 #zoning-controls-host { width: 100%; pointer-events: none; }
-.zoning-controls { pointer-events: auto; color: #0F172A; }
+.zoning-controls { pointer-events: auto; color: #0F172A; width: 100%; max-width: 280px; min-width: 0; max-height: 35vh; max-height: 35dvh; overflow: auto; overscroll-behavior: contain; box-sizing: border-box; }
+.zoning-controls > button { position: sticky; top: 0; z-index: 1; }
+.zoning-controls *, .zoning-controls *::before, .zoning-controls *::after { box-sizing: border-box; }
 .zoning-controls button { min-height: 44px; padding: 10px 14px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #0f172a0a; font-weight: 600; }
 .zoning-controls button[aria-pressed="true"] { background: #2563EB; border-color: #2563EB; color: #fff; }
-.zoning-controls fieldset { margin: 8px 0 0; padding: 10px 12px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fff; max-height: min(34vh, 260px); max-height: min(34dvh, 260px); overflow: auto; }
+.zoning-controls fieldset { margin: 8px 0 0; padding: 10px 12px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fff; min-width: 0; max-height: none; overflow: visible; }
 .zoning-controls legend { background: #fff; border-radius: 4px; padding: 2px 4px; font-size: 12px; color: #64748B; }
 .zoning-controls label { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 13px; cursor: pointer; }
 .zoning-controls .zoning-visibility { display: none; }
@@ -12,9 +14,10 @@
 .zoning-opacity input { width: 100%; min-height: 32px; }
 .zoning-controls p { padding: 8px 10px; margin: 6px 0 0; background: #fffffff2; border-radius: 8px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 @media (max-width: 900px) {
+  .zoning-controls { max-height: 30vh; max-height: 30dvh; }
   .map-shell:has(.parcel-panel:not([hidden])) #zoning-controls-host { visibility: hidden; }
   .zoning-controls button { padding: 6px 10px; min-height: 44px; font-size: 12px; border-radius: 9px; }
-  .zoning-controls fieldset { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2px 6px; min-width: 0; width: 100%; margin-top: 6px; padding: 6px 8px; max-height: min(38vh, 260px); max-height: min(38dvh, 260px); }
+  .zoning-controls fieldset { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2px 6px; min-width: 0; width: 100%; margin-top: 6px; padding: 6px 8px; max-height: none; }
   .zoning-controls legend { font-size: 11px; }
   .zoning-controls label { gap: 5px; min-width: 0; min-height: 44px; font-size: 12px; line-height: 1.35; }
   .zoning-controls label span { min-width: 0; overflow-wrap: anywhere; }
@@ -23,15 +26,41 @@
   .zoning-controls .zoning-opacity { grid-column: 1 / -1; padding-top: 5px; }
   .zoning-controls p { padding: 5px 7px; font-size: 11px; }
 }
-@media (max-height: 500px) { .zoning-controls fieldset { max-height: 24dvh; } }
+@media (max-height: 500px) { .zoning-controls { max-height: 24vh; max-height: 24dvh; } }
 
 /* Official images keep their aspect ratio, independent of map opacity. */
 .zoning-legend { margin-top: 6px; }
-.zoning-legend-panel { margin-top: 6px; padding: 10px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fffffff2; max-width: 100%; max-height: min(45dvh, 440px); overflow: auto; }
+.zoning-legend-panel { margin-top: 6px; padding: 10px; border: 1px solid #E2E8F0; border-radius: 12px; background: #fffffff2; max-width: 100%; max-height: none; overflow: visible; }
 .zoning-legend-panel h3 { margin: 8px 0 6px; font-size: 12px; }
 .zoning-legend-panel img { display: block; max-width: 100%; height: auto; }
 .zoning-legend-panel [hidden], .zoning-legend[hidden], .zoning-legend-panel[hidden] { display: none; }
 .zoning-legend-panel small { display: block; margin-top: 8px; color: #64748B; }
 .zoning-controls button:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
-@media (max-width: 900px) { .zoning-legend-panel { max-height: 36dvh; padding: 8px; } }
-@media (max-height: 500px) { .zoning-legend-panel { max-height: 24dvh; } }
+@media (max-width: 900px) { .zoning-legend-panel { padding: 8px; } }
+
+.zoning-legend-group-toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; text-align: left; overflow-wrap: anywhere; }
+.zoning-legend-group-toggle::after { content: "+"; flex-shrink: 0; }
+.zoning-legend-group-toggle[aria-expanded="true"]::after { content: "−"; }
+
+/* Integrated rows share the existing single scroll container. */
+.zoning-controls fieldset { display: block; }
+.zoning-group-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.zoning-group-row .zoning-kind { flex: 1; min-width: 0; }
+.zoning-group-row .zoning-kind span { overflow-wrap: anywhere; }
+.zoning-group-row .zoning-legend-group-toggle { width: auto; flex-shrink: 0; min-width: 64px; }
+.zoning-group-body { padding: 0 4px 8px; min-width: 0; }
+.zoning-group-body img { display: block; max-width: 100%; height: auto; }
+.zoning-group-body small { display: block; color: #64748B; margin-top: 6px; }
+.zoning-group-body[hidden], .zoning-group-body [hidden] { display: none; }
+
+.zoning-controls .zoning-group-row .zoning-legend-group-toggle,
+.zoning-controls .zoning-details-toggle { min-height: 28px; min-width: 44px; width: auto; padding: 3px 6px; gap: 4px; font-size: 12px; line-height: 18px; font-weight: 500; border-radius: 6px; box-shadow: none; }
+.zoning-major-legend { margin: 4px 0; padding-left: 20px; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.zoning-major-legend li { margin-bottom: 4px; }
+.zoning-group-body .zoning-major-swatches { display: block; width: auto; height: auto; max-width: 100%; max-height: 14px; margin-top: 2px; }
+.zoning-controls .zoning-color-note { margin: 2px 0 4px; padding: 0; background: none; font-size: 11px; color: #64748B; }
+@media (max-width: 900px), (pointer: coarse) {
+  /* Transparent borders keep a 44px hit area around the compact button face. */
+  .zoning-controls .zoning-group-row .zoning-legend-group-toggle,
+  .zoning-controls .zoning-details-toggle { min-height: 44px; padding: 2px 6px; border-top: 10px solid transparent; border-bottom: 10px solid transparent; background-clip: padding-box; }
+}

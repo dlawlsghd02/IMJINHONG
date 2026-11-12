@@ -1,0 +1,448 @@
+{
+  "schema": "imjinhong-search-diagnostics-v1",
+  "query": "장수군청",
+  "indexConvention": "zero-based",
+  "limits": {
+    "distanceMeters": 10,
+    "facilityIdentityNotConfirmed": true
+  },
+  "counts": {
+    "before": 7,
+    "after": 7,
+    "displayed": 5
+  },
+  "candidates": [
+    {
+      "originalIndex": 0,
+      "typeOrder": 0,
+      "searchType": "PLACE",
+      "id": "POI01000000M8XHW0",
+      "title": "장수군청",
+      "roadAddress": "전북특별자치도 장수군 장수읍 호비로 10",
+      "parcelAddress": "전북특별자치도 장수군 장수읍 장수리 176-7",
+      "placeCategory": "지방행정기관 > 군청",
+      "originalPoint": {
+        "x": "127.52134790482589",
+        "y": "35.647825302137505"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.52134790482589,
+        "latitude": 35.647825302137505
+      }
+    },
+    {
+      "originalIndex": 1,
+      "typeOrder": 1,
+      "searchType": "PLACE",
+      "id": "POI01000000BZVQWN",
+      "title": "장수군청",
+      "roadAddress": "전북특별자치도 장수군 장수읍 호비로 10",
+      "parcelAddress": "전북특별자치도 장수군 장수읍 장수리 176-7",
+      "placeCategory": "지방행정기관",
+      "originalPoint": {
+        "x": "127.52124167413822",
+        "y": "35.64745361499059"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.52124167413822,
+        "latitude": 35.64745361499059
+      }
+    },
+    {
+      "originalIndex": 2,
+      "typeOrder": 2,
+      "searchType": "PLACE",
+      "id": "POI01000000LXXPXX",
+      "title": "장수군청",
+      "roadAddress": "전북특별자치도 장수군 장수읍 호비로 10",
+      "parcelAddress": "전북특별자치도 장수군 장수읍 장수리 176-7",
+      "placeCategory": "건물 > 업무시설",
+      "originalPoint": {
+        "x": "127.5212815991889",
+        "y": "35.64768259211207"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.5212815991889,
+        "latitude": 35.64768259211207
+      }
+    },
+    {
+      "originalIndex": 3,
+      "typeOrder": 3,
+      "searchType": "PLACE",
+      "id": "POI01000000IQ06S2",
+      "title": "장수군청",
+      "parcelAddress": "전북특별자치도 장수군 장수읍 장수리 125-2",
+      "placeCategory": "통신판매업 > 전자상거래소매업 > 종합몰통신판매업",
+      "originalPoint": {
+        "x": "127.52089889727878",
+        "y": "35.64442591698224"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.52089889727878,
+        "latitude": 35.64442591698224
+      }
+    },
+    {
+      "originalIndex": 4,
+      "typeOrder": 4,
+      "searchType": "PLACE",
+      "id": "POI01000000LU2O12",
+      "title": "장수군청(폐기물소각시설)",
+      "parcelAddress": "전북특별자치도 장수군 장계면 금곡리 67",
+      "placeCategory": "토목건설업 > 대기오염물질배출시설설치사업장",
+      "originalPoint": {
+        "x": "127.57431520489403",
+        "y": "35.76679920306991"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.57431520489403,
+        "latitude": 35.76679920306991
+      }
+    },
+    {
+      "originalIndex": 5,
+      "typeOrder": 0,
+      "searchType": "ROAD",
+      "id": "5274025021101760007",
+      "title": "장수군청",
+      "roadAddress": "전북특별자치도 장수군 장수읍 호비로 10",
+      "parcelAddress": "장수읍 장수리 176-7",
+      "originalPoint": {
+        "x": "127.52129602558534",
+        "y": "35.647747139370296"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.52129602558534,
+        "latitude": 35.647747139370296
+      }
+    },
+    {
+      "originalIndex": 6,
+      "typeOrder": 1,
+      "searchType": "ROAD",
+      "id": "5274025021101760007",
+      "title": "장수군청",
+      "roadAddress": "전북특별자치도 장수군 장수읍 호비로 10",
+      "parcelAddress": "장수읍 장수리 176-7",
+      "originalPoint": {
+        "x": "127.52159755571623",
+        "y": "35.64700508976455"
+      },
+      "parsedCoordinate": {
+        "crs": "EPSG:4326",
+        "longitude": 127.52159755571623,
+        "latitude": 35.64700508976455
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 1,
+      "distanceMeters": 42.42982030248615,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "different-ids",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 2,
+      "distanceMeters": 16.962010710601195,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "different-ids",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 380.16612923136944,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 9.874913412721412,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 0,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 93.95194542613585,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 2,
+      "distanceMeters": 25.715439106237167,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "different-ids",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 338.08692665312054,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 33.00589103861209,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 1,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 59.34209824150009,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 3,
+      "distanceMeters": 363.773671555857,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 7.294753213281652,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 2,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 80.5632136906595,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 5,
+      "distanceMeters": 371.0429356165301,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 3,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 293.657723064184,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "conflicting-name-or-address",
+      "possibleSameFacilityUnconfirmed": false
+    },
+    {
+      "leftOriginalIndex": 5,
+      "rightOriginalIndex": 6,
+      "distanceMeters": 86.89430630068638,
+      "distanceMethod": "EPSG:4326 spherical great-circle approximation",
+      "pairMergeAllowed": false,
+      "mergedInResult": false,
+      "reason": "same-id-spatial-conflict",
+      "possibleSameFacilityUnconfirmed": false
+    }
+  ],
+  "groups": [
+    {
+      "groupIndex": 0,
+      "originalIndices": [
+        0
+      ],
+      "representativeOriginalIndex": 0,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 0,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 1,
+      "originalIndices": [
+        1
+      ],
+      "representativeOriginalIndex": 1,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 1,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 2,
+      "originalIndices": [
+        2
+      ],
+      "representativeOriginalIndex": 2,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 2,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "originalIndices": [
+        3
+      ],
+      "representativeOriginalIndex": 3,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 3,
+          "exactMatch": true,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 4,
+      "originalIndices": [
+        4
+      ],
+      "representativeOriginalIndex": 4,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 4,
+          "exactMatch": false,
+          "populatedFields": 3,
+          "typePriority": 0
+        }
+      ]
+    },
+    {
+      "groupIndex": 5,
+      "originalIndices": [
+        5
+      ],
+      "representativeOriginalIndex": 5,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 5,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    },
+    {
+      "groupIndex": 6,
+      "originalIndices": [
+        6
+      ],
+      "representativeOriginalIndex": 6,
+      "representativeRule": [
+        "exact-query-match",
+        "field-completeness",
+        "PLACE-ROAD-PARCEL",
+        "original-api-order"
+      ],
+      "scores": [
+        {
+          "originalIndex": 6,
+          "exactMatch": true,
+          "populatedFields": 4,
+          "typePriority": 1
+        }
+      ]
+    }
+  ],
+  "failedSearchTypes": [],
+  "hasMoreOnServer": true
+}

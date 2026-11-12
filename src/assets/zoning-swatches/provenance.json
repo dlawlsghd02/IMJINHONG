@@ -1,0 +1,377 @@
+{
+  "note": "User-provided legend screenshots; original RGB pixels cropped and concatenated without resampling. Not verified SLD values. Boxes: left,top,right-exclusive,bottom-exclusive.",
+  "assets": [
+    {
+      "asset": "urban-residential.png",
+      "source": "legend-references/lt_c_uq111_urban.png",
+      "sourceSha256": "6e83ce080f76ec8fe9d079d0076a323f7d1c58aab9717a06480be266b8cfd5f6",
+      "sha256": "86ebd72d5eaff8bf0b5710a5d03f6c46bd4f318c834e659b3c208dc362c68426",
+      "cropBoxes": [
+        [
+          15,
+          478,
+          29,
+          492
+        ],
+        [
+          15,
+          498,
+          29,
+          512
+        ],
+        [
+          15,
+          518,
+          29,
+          532
+        ],
+        [
+          15,
+          538,
+          29,
+          552
+        ],
+        [
+          15,
+          558,
+          29,
+          572
+        ],
+        [
+          15,
+          578,
+          29,
+          592
+        ],
+        [
+          15,
+          598,
+          29,
+          612
+        ],
+        [
+          15,
+          618,
+          29,
+          632
+        ],
+        [
+          15,
+          638,
+          29,
+          652
+        ],
+        [
+          15,
+          658,
+          29,
+          672
+        ],
+        [
+          15,
+          678,
+          29,
+          692
+        ],
+        [
+          15,
+          698,
+          29,
+          712
+        ]
+      ],
+      "width": 168,
+      "height": 14
+    },
+    {
+      "asset": "urban-commercial.png",
+      "source": "legend-references/lt_c_uq111_urban.png",
+      "sourceSha256": "6e83ce080f76ec8fe9d079d0076a323f7d1c58aab9717a06480be266b8cfd5f6",
+      "sha256": "14e2d9a5e3572492f76e717e526169111e33884c5c9e03a6f6ce1ac208519f99",
+      "cropBoxes": [
+        [
+          15,
+          338,
+          29,
+          352
+        ],
+        [
+          15,
+          358,
+          29,
+          372
+        ],
+        [
+          15,
+          378,
+          29,
+          392
+        ],
+        [
+          15,
+          398,
+          29,
+          412
+        ],
+        [
+          15,
+          418,
+          29,
+          432
+        ],
+        [
+          15,
+          438,
+          29,
+          452
+        ],
+        [
+          15,
+          458,
+          29,
+          472
+        ]
+      ],
+      "width": 98,
+      "height": 14
+    },
+    {
+      "asset": "urban-industrial.png",
+      "source": "legend-references/lt_c_uq111_urban.png",
+      "sourceSha256": "6e83ce080f76ec8fe9d079d0076a323f7d1c58aab9717a06480be266b8cfd5f6",
+      "sha256": "f7988aaf107a082b8479c39bf7b536844bfbb197119df1ba222eddb66b5d9f14",
+      "cropBoxes": [
+        [
+          15,
+          218,
+          29,
+          232
+        ],
+        [
+          15,
+          238,
+          29,
+          252
+        ],
+        [
+          15,
+          258,
+          29,
+          272
+        ],
+        [
+          15,
+          278,
+          29,
+          292
+        ],
+        [
+          15,
+          298,
+          29,
+          312
+        ],
+        [
+          15,
+          318,
+          29,
+          332
+        ]
+      ],
+      "width": 84,
+      "height": 14
+    },
+    {
+      "asset": "urban-green.png",
+      "source": "legend-references/lt_c_uq111_urban.png",
+      "sourceSha256": "6e83ce080f76ec8fe9d079d0076a323f7d1c58aab9717a06480be266b8cfd5f6",
+      "sha256": "8cb9f1686d164615b5e515759a25e267b3832b5493d4499e8c695a80b1351334",
+      "cropBoxes": [
+        [
+          15,
+          98,
+          29,
+          112
+        ],
+        [
+          15,
+          118,
+          29,
+          132
+        ],
+        [
+          15,
+          138,
+          29,
+          152
+        ],
+        [
+          15,
+          158,
+          29,
+          172
+        ],
+        [
+          15,
+          178,
+          29,
+          192
+        ],
+        [
+          15,
+          198,
+          29,
+          212
+        ]
+      ],
+      "width": 84,
+      "height": 14
+    },
+    {
+      "asset": "management-conservation.png",
+      "source": "legend-references/lt_c_uq112_management.png",
+      "sourceSha256": "b85d43fcef73df482268c06ea3623a940efa81a45c2d491e34915ddafd5ca2ae",
+      "sha256": "1552feeb4d627f2ed80e3a3248bdd41be8639e337560874b8f282b947f20413f",
+      "cropBoxes": [
+        [
+          15,
+          78,
+          29,
+          92
+        ],
+        [
+          15,
+          98,
+          29,
+          112
+        ]
+      ],
+      "width": 28,
+      "height": 14
+    },
+    {
+      "asset": "management-production.png",
+      "source": "legend-references/lt_c_uq112_management.png",
+      "sourceSha256": "b85d43fcef73df482268c06ea3623a940efa81a45c2d491e34915ddafd5ca2ae",
+      "sha256": "012df87b0110f516ffd33cebc41640aa0a62b3fe44726ffe70f3f5ce2abc955c",
+      "cropBoxes": [
+        [
+          15,
+          118,
+          29,
+          132
+        ],
+        [
+          15,
+          138,
+          29,
+          152
+        ]
+      ],
+      "width": 28,
+      "height": 14
+    },
+    {
+      "asset": "management-planned.png",
+      "source": "legend-references/lt_c_uq112_management.png",
+      "sourceSha256": "b85d43fcef73df482268c06ea3623a940efa81a45c2d491e34915ddafd5ca2ae",
+      "sha256": "c1998bae112bc055db715ddc8250c5eaa527a32b0fa5f46317d4dadf8b3c3df0",
+      "cropBoxes": [
+        [
+          15,
+          158,
+          29,
+          172
+        ]
+      ],
+      "width": 14,
+      "height": 14
+    },
+    {
+      "asset": "agriculture-forest.png",
+      "source": "legend-references/lt_c_uq113_agriculture_forest.png",
+      "sourceSha256": "26931e4be7dc008077cf274dded1ffff7c4dd07f79bde3c68a820ae070a2023e",
+      "sha256": "e718715ebec9f1dc0c6a0573643ea21620cceaa5a96acc570ce03e1c618127b4",
+      "cropBoxes": [
+        [
+          15,
+          78,
+          29,
+          92
+        ],
+        [
+          15,
+          98,
+          29,
+          112
+        ],
+        [
+          15,
+          118,
+          29,
+          132
+        ],
+        [
+          15,
+          138,
+          29,
+          152
+        ],
+        [
+          15,
+          158,
+          29,
+          172
+        ]
+      ],
+      "width": 70,
+      "height": 14
+    },
+    {
+      "asset": "nature-conservation.png",
+      "source": "legend-references/lt_c_uq114_nature_conservation.png",
+      "sourceSha256": "5626fb6e565ceeb485bb744e46a9349ba183a60bfd2eb079e618c3e1fe4b56fc",
+      "sha256": "f0bbc87df7f0930eed6814928884d7af3e2fd918998a66fc92862e11669a4ecd",
+      "cropBoxes": [
+        [
+          15,
+          18,
+          29,
+          32
+        ],
+        [
+          15,
+          38,
+          29,
+          52
+        ],
+        [
+          15,
+          58,
+          29,
+          72
+        ],
+        [
+          15,
+          78,
+          29,
+          92
+        ],
+        [
+          15,
+          98,
+          29,
+          112
+        ],
+        [
+          15,
+          118,
+          29,
+          132
+        ]
+      ],
+      "width": 84,
+      "height": 14
+    }
+  ]
+}

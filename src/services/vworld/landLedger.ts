@@ -10,6 +10,18 @@ export interface LandLedger {
   landCategoryName: string | null;
   registeredArea: number | null;
   updatedAt: string | null;
+  ownershipCode: string | null;
+  ownershipName: string | null;
+  coOwnerCount: number | null;
+}
+
+function ownershipText(value: unknown): string | null {
+  return typeof value === 'string' && value.trim() && value.length <= 100 ? value : null;
+}
+function coOwners(value: unknown): number | null {
+  if (typeof value !== 'number' && (typeof value !== 'string' || !/^\d+$/.test(value))) return null;
+  const number = Number(value);
+  return Number.isSafeInteger(number) && number >= 0 ? number : null;
 }
 
 export function parseLandLedger(payload: unknown, requestedPnu: string): AttributeState<LandLedger> {
@@ -21,6 +33,9 @@ export function parseLandLedger(payload: unknown, requestedPnu: string): Attribu
       pnu: pnu(row.pnu), landCategoryCode: code, landCategoryName: text(row.lndcgrCodeNm),
       registeredArea: row.lndpclAr === undefined || row.lndpclAr === null || row.lndpclAr === '' ? null : nonNegative(row.lndpclAr),
       updatedAt: date(row.lastUpdtDt),
+      ownershipCode: ownershipText(row.posesnSeCode),
+      ownershipName: ownershipText(row.posesnSeCodeNm),
+      coOwnerCount: coOwners(row.cnrsPsnCo),
     };
   });
   const unique = [...new Map(values.map((value) => [JSON.stringify(value), value])).values()];
@@ -38,6 +53,12 @@ export async function loadLandLedger(requestedPnu: string, auth: AttributeAuthen
       if (String(root.totalCount) !== '0') throw new ParcelError('토지임야 응답의 빈 목록을 검증하지 못했습니다.');
     }
     if (result.status === 'ok' && result.value.landCategoryName) result.value.landCategoryName = result.value.landCategoryName.split(auth.apiKey.trim()).join('[인증정보 제외]').replace(/https?:\/\/\S+/gi, '[URL 제외]');
+    if (result.status === 'ok') {
+      for (const key of ['ownershipCode', 'ownershipName'] as const) {
+        const value = result.value[key];
+        if (value && (value.includes(auth.apiKey.trim()) || /https?:\/\//i.test(value))) result.value[key] = null;
+      }
+    }
     return result;
   } catch (error) { return { status: 'error', message: attributeFailure(error) }; }
 }

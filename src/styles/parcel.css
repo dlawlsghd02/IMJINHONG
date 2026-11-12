@@ -72,6 +72,13 @@
 .parcel-price-change { font-size: 11px; }
 .parcel-prices h3 { display: block; line-height: 1.5; margin-bottom: 6px; }
 
+.parcel-regulations { margin-top: 10px; }
+.parcel-regulation-card { border-top: 1px solid #E2E8F0; }
+.parcel-regulation-card > summary { cursor: pointer; min-height: 44px; align-content: center; font-size: 12px; font-weight: 600; }
+.parcel-regulation-row { padding: 6px 0; overflow-wrap: anywhere; }
+.parcel-regulation-row small, .parcel-land-use .parcel-regulation-notice { color: #64748B; font-size: 11px; line-height: 1.5; }
+.parcel-regulation-card > summary:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
+
 .ownership-controls { pointer-events: auto; width: 100%; color: #0F172A; font-size: 12px; }
 .ownership-controls button { min-height: 44px; padding: 6px 10px; border: 1px solid #E2E8F0; border-radius: 9px; background: #fff; color: inherit; font-weight: 600; }
 .ownership-controls button[aria-pressed="true"] { background: #2563EB; color: #fff; }
@@ -87,6 +94,11 @@
 .ownership-wms-controls details[open] > summary::after { content: '−'; }
 .ownership-wms-controls small { display: block; color: #64748B; line-height: 1.5; }
 .ownership-wms-controls [data-state="error"] { color: #943d21; }
+.ownership-wms-controls .ownership-wms-legend-list { grid-template-columns: minmax(0, 1fr); gap: 6px; margin: 0 0 8px; }
+.ownership-wms-legend-list li { min-width: 0; align-items: flex-start; }
+.ownership-wms-legend-list .ownership-wms-swatch { background: #fff; margin-top: 2px; overflow: hidden; }
+.ownership-wms-swatch > i { display: block; width: 100%; height: 100%; }
+.ownership-wms-label { min-width: 0; overflow-wrap: anywhere; line-height: 1.5; }
 @media (max-width: 900px) {
   .layer-controls-stack { top: 64px; left: max(8px, env(safe-area-inset-left)); width: min(210px, calc(100% - 72px)); max-height: calc(55dvh - 64px); }
   .layer-tools:not([open]) { width: fit-content; }

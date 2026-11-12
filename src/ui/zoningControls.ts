@@ -1,4 +1,4 @@
-import { createZoningLegend } from './zoningLegend';
+import { createZoningGroupLegend } from './zoningLegend';
 import { zoningLayers, type ZoningLayerId } from '../services/vworld/zoningWms';
 
 export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLayerId[]) => void,
@@ -13,11 +13,17 @@ export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLay
   const visibility = document.createElement('input'); visibility.type = 'checkbox'; visibility.setAttribute('role', 'switch');
   const visibilityText = document.createElement('span'); visibilityText.textContent = '용도지역 표시';
   visibilityLabel.append(visibility, visibilityText); options.append(visibilityLabel);
+  const groupLegends: ReturnType<typeof createZoningGroupLegend>[] = [];
   const inputs = zoningLayers.map((layer) => {
     const label = document.createElement('label'), input = document.createElement('input'); label.className = 'zoning-kind';
     input.type = 'checkbox'; input.checked = true; input.value = layer.id;
     const text = document.createElement('span'); text.textContent = layer.label;
-    label.append(input, text); options.append(label); return input;
+    const group = createZoningGroupLegend(layer.id, authentication?.apiKey, authentication?.domain, () => {
+      groupLegends.forEach((entry) => entry.collapse());
+    });
+    groupLegends.push(group);
+    const row = document.createElement('div'); row.className = 'zoning-group-row';
+    label.append(input, text); row.append(label, group.button); options.append(row, group.root); return input;
   });
   const opacityLabel = document.createElement('label'); opacityLabel.className = 'zoning-opacity';
   const opacityText = document.createElement('span'); opacityText.textContent = '불투명도 55%';
@@ -35,25 +41,20 @@ export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLay
     // 화면 전환으로 포커스가 숨겨지는 경우에만 버튼으로 돌린다.
     if ((!expanded && options.contains(document.activeElement)) || (!mobile.matches && visibility === document.activeElement)) toggle.focus();
     options.hidden = !expanded;
+    if (!expanded || !enabled) groupLegends.forEach((entry) => entry.collapse());
   };
   const selectedIds = () => zoningLayers.filter((_, index) => inputs[index].checked).map((layer) => layer.id);
-  const officialLegend = authentication ? createZoningLegend(authentication.apiKey, authentication.domain, () => {
-    if (mobile.matches) { expanded = false; updatePresentation(); }
-  }) : undefined;
-  if (officialLegend) root.append(officialLegend.root);
-  const changed = () => { officialLegend?.setState(enabled, selectedIds()); onChange(enabled, selectedIds()); };
+  const changed = () => { onChange(enabled, selectedIds()); };
   const toggled = () => {
     if (mobile.matches) {
       expanded = !expanded;
       if (expanded && !enabled) { enabled = true; changed(); }
     } else { enabled = !enabled; expanded = enabled; changed(); }
-    if (expanded && mobile.matches) officialLegend?.collapse();
     updatePresentation();
   };
   const visibilityChanged = () => { enabled = visibility.checked; updatePresentation(); changed(); };
   // 화면 회전·너비 변경으로 표시 상태·선택값·요청 설정을 변경하지 않는다.
   const screenChanged = () => {
-    if (mobile.matches && expanded) officialLegend?.collapse();
     updatePresentation();
   };
   const opacityChanged = () => {
@@ -68,6 +69,6 @@ export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLay
     status.textContent = message; status.hidden = !message; status.setAttribute('aria-busy', String(busy));
   }, dispose() {
     toggle.removeEventListener('click', toggled); inputs.forEach((input) => input.removeEventListener('change', changed)); opacity.removeEventListener('input', opacityChanged);
-    visibility.removeEventListener('change', visibilityChanged); mobile.removeEventListener('change', screenChanged); officialLegend?.dispose(); root.remove();
+    visibility.removeEventListener('change', visibilityChanged); mobile.removeEventListener('change', screenChanged); groupLegends.forEach((entry) => entry.dispose()); root.remove();
   } };
 }

@@ -1,4 +1,5 @@
 import { loadLandUse } from '../services/vworld/landUse';
+import { publishOwnership, selectedOwnershipData } from './ownership';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import { Fill, Stroke, Style } from 'ol/style.js';
@@ -42,6 +43,7 @@ export const cadastralFeature: MapFeature = {
     const panel = createParcelPanel(toggle, clearSelection);
     const invalidate = () => {
       generation++;
+      publishOwnership(map,{status:'not-loaded',mode:'actual'});
       pointController?.abort();
       pointController = undefined; pendingPoint = '';
       attributesPending = undefined;
@@ -86,6 +88,7 @@ export const cadastralFeature: MapFeature = {
     async function show(feature: ParcelFeature, token: number, signal: AbortSignal) {
       if (disposed || !enabled || token !== generation) return;
       const id = pnu(feature.get('pnu'));
+      publishOwnership(map,{status:'loading',mode:'actual'});
       selected.clear(); selected.addFeature(feature.clone());
       panel.showSelection(id, text(feature.get('jibun')));
       panel.setStatus('선택 필지 상세정보 확인 중…', true);
@@ -98,8 +101,10 @@ export const cadastralFeature: MapFeature = {
         }),
         loadLandLedger(id, attributeAuth, signal).then((state) => {
           if (!current()) return; pending.ledger = false; panel.renderLedger(state);
+          publishOwnership(map,state.status === 'ok' ? selectedOwnershipData(feature,state.value) : {status:state.status === 'not-found' ? 'not-loaded' : 'error',mode:'actual'});
         }, () => {
           if (!current()) return; pending.ledger = false; panel.renderLedger({ status: 'error', message: '토지임야 조회를 처리하지 못했습니다.' });
+          publishOwnership(map,{status:'error',mode:'actual'});
         }),
         priceHistory.load(id, signal, (snapshot) => {
           if (!current()) return;

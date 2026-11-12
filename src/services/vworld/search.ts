@@ -1,6 +1,6 @@
 // Official Search API 2.0: format=json supports the callback parameter.
 // Reference: https://www.vworld.kr/dev/v4dv_search2_s001.do
-export type AddressSearchKind = 'road' | 'parcel';
+export type AddressSearchKind = 'place' | 'road' | 'parcel';
 
 export interface AddressSearchRequest {
   query: string;
@@ -16,6 +16,8 @@ export interface AddressSearchItem {
   title?: string;
   roadAddress?: string;
   parcelAddress?: string;
+  rawPoint?: { x: string | number; y: string | number };
+  placeCategory?: string;
   location: { crs: 'EPSG:4326'; longitude: number; latitude: number };
 }
 
@@ -26,6 +28,16 @@ export interface AddressSearchPage {
   totalRecords?: number;
   hasPrevious: boolean;
   hasNext: boolean;
+}
+
+export interface AddressSearchCandidate extends AddressSearchItem {
+  kind: AddressSearchKind;
+}
+export interface AddressSearchResults {
+  query?: string;
+  items: readonly AddressSearchCandidate[];
+  hasNext: boolean;
+  failures: readonly { kind: AddressSearchKind; message: string }[];
 }
 
 export type AddressSearchProvider = (request: AddressSearchRequest) => Promise<AddressSearchPage>;
@@ -103,7 +115,8 @@ function parsePage(payload: unknown, request: AddressSearchRequest, key: string)
   if (result.crs !== 'EPSG:4326') {
     throw new SearchError('response', '검색 응답 좌표계가 EPSG:4326과 달라 위치 이동을 중단했습니다.');
   }
-  if (typeof result.type !== 'string' || result.type.toUpperCase() !== 'ADDRESS' || !Array.isArray(result.items)) {
+  const expectedType = request.kind === 'place' ? 'PLACE' : 'ADDRESS';
+  if (typeof result.type !== 'string' || result.type.toUpperCase() !== expectedType || !Array.isArray(result.items)) {
     throw new SearchError('response', '주소 검색 결과 목록의 형식이 올바르지 않습니다.');
   }
   const record = object(response.record);
@@ -120,7 +133,7 @@ function parsePage(payload: unknown, request: AddressSearchRequest, key: string)
   const items = result.items.map((raw): AddressSearchItem => {
     const item = object(raw);
     const address = object(item.address);
-    if (address.category !== undefined &&
+    if (request.kind !== 'place' && address.category !== undefined &&
         (typeof address.category !== 'string' || address.category.toUpperCase() !== request.kind.toUpperCase())) {
       throw new SearchError('response', '검색 결과의 주소 유형이 요청과 일치하지 않습니다.');
     }
@@ -133,10 +146,14 @@ function parsePage(payload: unknown, request: AddressSearchRequest, key: string)
     const id = text(item.id);
     const roadAddress = text(address.road);
     const parcelAddress = text(address.parcel);
-    if (!id || (!roadAddress && !parcelAddress)) {
+    const title = request.kind === 'place' ? text(item.title) : text(address.bldnm);
+    // Published PLACE responses include POIs with both address strings empty.
+    if (!id || (request.kind === 'place' ? !title : (!roadAddress && !parcelAddress))) {
       throw new SearchError('response', '검색 결과에 주소 또는 식별자가 없습니다.');
     }
-    return { id, title: text(address.bldnm), roadAddress, parcelAddress,
+    return { id, title, roadAddress, parcelAddress,
+      rawPoint: { x: typeof point.x === 'string' ? point.x : longitude, y: typeof point.y === 'string' ? point.y : latitude },
+      ...(request.kind === 'place' && typeof item.category === 'string' ? { placeCategory: item.category } : {}),
       location: { crs: 'EPSG:4326', longitude, latitude } };
   });
   return { items, page: currentPage, totalPages, totalRecords,
@@ -211,7 +228,7 @@ export function createAddressSearchProvider(apiKey: string): AddressSearchProvid
     const key = apiKey.trim();
     if (!key) throw new SearchError('configuration', 'V-World 검색 인증키가 없습니다.');
     const query = request.query.trim();
-    if (!query || !['road', 'parcel'].includes(request.kind) || !Number.isSafeInteger(request.page) || request.page < 1 ||
+    if (!query || !['place', 'road', 'parcel'].includes(request.kind) || !Number.isSafeInteger(request.page) || request.page < 1 ||
         !Number.isSafeInteger(request.size) || request.size < 1 || request.size > 1000) {
       throw new SearchError('input', '검색어·주소 유형·페이지 설정을 확인하세요.');
     }
@@ -219,8 +236,8 @@ export function createAddressSearchProvider(apiKey: string): AddressSearchProvid
     const callback = `__imjinhong_search_${id}`;
     const url = new URL(endpoint);
     url.search = new URLSearchParams({ service: 'search', version: '2.0', request: 'search',
-      key, format: 'json', errorFormat: 'json', crs: 'EPSG:4326', type: 'ADDRESS',
-      category: request.kind === 'road' ? 'ROAD' : 'PARCEL', query,
+      key, format: 'json', errorFormat: 'json', crs: 'EPSG:4326', type: request.kind === 'place' ? 'PLACE' : 'ADDRESS',
+      ...(request.kind === 'place' ? {} : { category: request.kind === 'road' ? 'ROAD' : 'PARCEL' }), query,
       page: String(request.page), size: String(request.size), callback }).toString();
     const payload = await requestJsonp(url, id, callback, request.signal);
     if (request.signal.aborted) throw new DOMException('Search invalidated', 'AbortError');
