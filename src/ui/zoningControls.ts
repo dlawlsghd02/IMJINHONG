@@ -34,9 +34,10 @@ export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLay
   let enabled = false, expanded = false;
   const mobile = window.matchMedia('(max-width: 900px)');
   const updatePresentation = () => {
+    root.setAttribute('data-enabled', String(enabled));
     toggle.setAttribute('aria-pressed', String(enabled));
     toggle.setAttribute('aria-expanded', String(expanded));
-    toggle.setAttribute('aria-label', mobile.matches ? `용도지역 ${enabled ? '켜짐' : '꺼짐'}, 설정 ${expanded ? '접기' : '펼치기'}` : '용도지역');
+    toggle.setAttribute('aria-label', `용도지역 ${enabled ? '켜짐' : '꺼짐'}, 설정 ${expanded ? '펼쳐짐' : '접힘'}`);
     visibility.checked = enabled;
     // 화면 전환으로 포커스가 숨겨지는 경우에만 버튼으로 돌린다.
     if ((!expanded && options.contains(document.activeElement)) || (!mobile.matches && visibility === document.activeElement)) toggle.focus();
@@ -66,6 +67,7 @@ export function createZoningControls(onChange: (enabled: boolean, ids: ZoningLay
   visibility.addEventListener('change', visibilityChanged); mobile.addEventListener('change', screenChanged);
   updatePresentation();
   return { root, setStatus(message: string, busy = false) {
+    root.setAttribute('aria-busy', String(busy));
     status.textContent = message; status.hidden = !message; status.setAttribute('aria-busy', String(busy));
   }, dispose() {
     toggle.removeEventListener('click', toggled); inputs.forEach((input) => input.removeEventListener('change', changed)); opacity.removeEventListener('input', opacityChanged);

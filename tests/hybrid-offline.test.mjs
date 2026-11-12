@@ -44,8 +44,11 @@ test('명칭 UI: 위성에서만 표시, aria 상태 및 전환 후 선택값 �
   const dispose = api.bindMapControls(host, {}, (id) => selections.push(id), (value) => changes.push(value));
   const fire = (button) => click({ target: { closest: () => button } });
   fire(satellite); assert.equal(names.hidden, false);
+  assert.equal(base.attributes['aria-pressed'],'false'); assert.equal(satellite.attributes['aria-pressed'],'true');
   fire(names); assert.deepEqual(changes, [false]); assert.equal(names.attributes['aria-pressed'], 'false');
-  fire(base); assert.equal(names.hidden, true); fire(satellite);
+  fire(base); assert.equal(names.hidden, true);
+  assert.equal(base.attributes['aria-pressed'],'true'); assert.equal(satellite.attributes['aria-pressed'],'false');
+  fire(satellite);
   assert.equal(names.attributes['aria-pressed'], 'false'); assert.deepEqual(changes, [false]);
   assert.deepEqual(selections, ['satellite', 'base', 'satellite']); dispose(); assert.equal(names.disabled, true);
 });

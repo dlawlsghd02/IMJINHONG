@@ -15,10 +15,27 @@ for(const width of [320,375,390,430,768,1280])test(`접기 메뉴 상태: ${widt
   const ui=api.createLayout(root);
   assert.equal(nodes.get('.search-tools').open,width>900);assert.equal(nodes.get('.layer-tools').open,width>900);
   assert.match(root.innerHTML,/aria-label="지도 확대"/);assert.match(root.innerHTML,/aria-label="지도 축소"/);
+  assert.match(root.innerHTML, /class="basemap-segment"[\s\S]*data-basemap="base"[\s\S]*data-basemap="satellite"[\s\S]*<\/div>\s*<button[^>]*data-map-names/);
   const target=ui.target;media.matches=!media.matches;listeners.get('change')();
   assert.equal(nodes.get('.layer-tools').open,!media.matches);assert.equal(ui.target,target);
   ui.dispose();assert.equal(listeners.size,0);
  }finally{globalThis.window=previous;}
+});
+
+test('현대화 UI 정적 확인: 세그먼트·세로 도구·선택 상태·작은 범례 버튼·터치 및 출처 유지',async()=>{
+  const read=p=>readFile(new URL('../src/styles/'+p,import.meta.url),'utf8');
+  const [map,parcel,zoning,base]=await Promise.all(['map.css','parcel.css','zoning.css','base.css'].map(read));
+  assert.match(base,/--ui-surface: #fff/); assert.match(base,/prefers-reduced-motion/);
+  assert.match(map,/\.basemap-segment\s*\{[^}]*display: flex/);
+  assert.match(map,/\[data-basemap\]\[aria-pressed="true"\][^}]*background: var\(--ui-accent\)/);
+  assert.match(map,/\.layer-tools > summary\s*\{[^}]*pointer-events: auto/);
+  assert.match(parcel,/width: min\(280px, calc\(100% - 92px\)\)/);
+  assert.match(parcel,/\.parcel-toggle\[aria-pressed="true"\] \.parcel-toggle-state/);
+  assert.match(zoning,/zoning-details-toggle\s*\{[^}]*min-height: 30px;[^}]*font-size: 12px/);
+  assert.match(zoning,/\.zoning-controls \.zoning-color-note\s*\{[^}]*order: 3/);
+  assert.match(zoning,/zoning-details-toggle\s*\{[^}]*min-height: 44px;[^}]*border-top: 7px solid transparent/);
+  assert.match(zoning,/\[data-enabled="true"\]/);
+  // 표시 규칙 확인이며 실제 브라우저 크기·겹침 검증을 대신하지 않는다.
 });
 test('모바일 배치 정적 규칙: 터치·safe-area·하단 패널·스크롤·접기 상태',async()=>{
  const read=p=>readFile(new URL('../src/styles/'+p,import.meta.url),'utf8');

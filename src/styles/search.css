@@ -20,6 +20,12 @@
 
 .address-search input, .address-search select { border: 1px solid #E2E8F0; border-radius: 8px; background: #F8FAFC; color: #0F172A; }
 .address-search form button { border: 0; border-radius: 8px; background: #2563EB; color: #fff; padding-inline: 16px; }
+.address-search { border-radius: var(--ui-radius); }
+.address-search form button { font-size: 12px; font-weight: 600; }
+.address-search input { border-color: var(--ui-border); background: #F8FAFC; }
+.address-search-results button { border: 1px solid var(--ui-border); border-radius: 8px; background: #fff; padding: 10px; }
+.search-result-address { font-size: 13px; font-weight: 500; }
+.search-result-detail { font-size: 11px; line-height: 1.5; }
 @media (max-width: 900px) {
   #address-search-host { min-width: 0; width: 100%; }
   .address-search { padding: 4px 0; }

@@ -1,8 +1,12 @@
 :root { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #0F172A; background: #F8FAFC; font-synthesis: none; }
+:root { --ui-accent: #2563EB; --ui-ink: #172B4D; --ui-muted: #64748B; --ui-border: #E5EAF1; --ui-surface: #fff; --ui-radius: 12px; --ui-shadow: 0 4px 18px #172b4d0c; }
 * { box-sizing: border-box; }
 body { margin: 0; }
 button { font: inherit; cursor: pointer; color: inherit; }
 button:disabled { cursor: default; opacity: .5; }
+button, summary { -webkit-tap-highlight-color: transparent; }
+button { transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+@media (prefers-reduced-motion: reduce) { button { transition: none; } }
 button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid #2563EB; outline-offset: 3px; }
 [hidden] { display: none !important; }
 .app-shell { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }

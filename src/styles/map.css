@@ -53,3 +53,42 @@
   .coordinate-bar > span:first-child { display: none; }
   .status-panel { max-height: 20dvh; }
 }
+
+/* Local line icons: no icon font or network dependency. */
+:root {
+  --icon-map: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5Zm6-2v16m6-14v16'/%3E%3C/svg%3E");
+  --icon-layers: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5'/%3E%3C/svg%3E");
+  --icon-satellite: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='m8 5 3-3 4 4-3 3-4-4Zm4 10 3-3 4 4-3 3-4-4Zm-6-5 4-4 8 8-4 4-8-8Zm-3 5a6 6 0 0 0 6 6m-6-10a10 10 0 0 0 10 10'/%3E%3C/svg%3E");
+}
+.app-header { border-color: var(--ui-border); gap: 12px; padding-block: calc(10px + env(safe-area-inset-top)) 10px; }
+.app-header h1 { font-size: 18px; letter-spacing: .09em; color: var(--ui-ink); }
+.header-description { font-size: 12px; }
+.coordinate-bar { border-top: 1px solid var(--ui-border); color: var(--ui-muted); padding-top: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+.basemap-controls { align-items: center; gap: 6px; padding: 0; background: transparent; border: 0; box-shadow: none; }
+.basemap-segment { display: flex; align-items: center; gap: 3px; padding: 4px; background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); }
+.basemap-controls [data-basemap] { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 7px 12px; border-radius: 8px; background: transparent; color: #475569; font-size: 12px; font-weight: 600; }
+.basemap-controls [data-basemap][aria-pressed="true"] { color: #fff; background: var(--ui-accent); }
+.basemap-controls [data-basemap]::before, .layer-tools > summary::before { content: ""; display: inline-block; width: 17px; height: 17px; flex-shrink: 0; background: currentColor; mask: var(--icon-map) center / contain no-repeat; }
+.basemap-controls [data-basemap="satellite"]::before { mask-image: var(--icon-satellite); }
+.basemap-controls [data-map-names] { min-height: 36px; background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: 9px; box-shadow: var(--ui-shadow); font-size: 12px; }
+.zoom-controls { border-color: var(--ui-border); border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); }
+.zoom-controls button { background: transparent; color: var(--ui-ink); }
+.layer-tools > summary { display: flex; align-items: center; gap: 8px; min-height: 44px; width: 100%; padding: 9px 12px; list-style: none; cursor: pointer; pointer-events: auto; background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); color: var(--ui-ink); font-size: 12px; font-weight: 600; }
+.layer-tools > summary::-webkit-details-marker { display: none; }
+.layer-tools > summary::before { mask-image: var(--icon-layers); color: var(--ui-muted); }
+.layer-tools > summary::after { content: ""; width: 6px; height: 6px; margin-left: auto; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); }
+.layer-tools[open] > summary::after { content: ""; transform: rotate(225deg); }
+.layer-tools-content { gap: 6px; margin-top: 6px; }
+.status-panel { border-color: var(--ui-border); border-radius: 10px; box-shadow: var(--ui-shadow); color: var(--ui-muted); }
+@media (hover: hover) {
+  .basemap-controls [data-basemap][aria-pressed="false"]:hover, .zoom-controls button:hover { background: #F1F5F9; }
+  .layer-tools > summary:hover { border-color: #CBD5E1; }
+}
+@media (max-width: 900px) {
+  .app-header { padding-block: calc(4px + env(safe-area-inset-top)) 4px; }
+  .basemap-controls { top: 8px; left: max(8px, env(safe-area-inset-left)); gap: 4px; }
+  .basemap-segment { padding: 2px; gap: 2px; border-radius: 10px; }
+  .basemap-controls [data-basemap] { min-height: 44px; padding: 4px 8px; gap: 5px; }
+  .basemap-controls [data-basemap]::before { width: 15px; height: 15px; }
+  .basemap-controls [data-map-names] { min-height: 44px; padding-inline: 7px; }
+}

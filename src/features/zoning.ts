@@ -16,14 +16,15 @@ export const zoningFeature: MapFeature = {
     const pending = new Set<unknown>();
     const notify = () => {
       if (!active) return;
-      ui.setStatus(failures ? `용도지역: 표시 시작 이후 타일 ${failures}건 실패. 인증·네트워크를 확인하세요.` : pending.size ? '용도지역 불러오는 중…' : '용도지역 · 타일 요청 오류 없음', pending.size > 0);
+      // 정상 요청은 조용히 처리한다. 진행 상태와 실패 집계·오래된 타일 차단은 유지한다.
+      ui.setStatus(failures ? `용도지역: 표시 시작 이후 타일 ${failures}건 실패. 인증·네트워크를 확인하세요.` : '', pending.size > 0);
     };
     const ui = createZoningControls((enabled, ids) => {
       active = enabled && ids.length > 0;
       layer.setVisible(false); pending.clear(); failures = 0;
       if (active) source.updateParams(zoningParameters(ids));
       layer.setVisible(active);
-      ui.setStatus(!enabled ? '' : !ids.length ? '표시할 용도지역을 선택하세요.' : '용도지역 타일 요청 대기 중…');
+      ui.setStatus(enabled && !ids.length ? '표시할 용도지역을 선택하세요.' : '');
     }, (opacity) => layer.setOpacity(opacity), { apiKey: vworldApiKey, domain: vworldDomain });
     const current = (tile: { getKey(): string }) => active && tile.getKey().startsWith(source.getKey() + '/');
     const keys: EventsKey[] = [

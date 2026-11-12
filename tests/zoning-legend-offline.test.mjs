@@ -138,7 +138,7 @@ test('통합 패널: 체크박스·그룹 범례·전체 세부 범례 독립과
     ['보전관리지역','생산관리지역','계획관리지역'], ['농림지역'], ['자연환경보전지역'],
   ]);
   assert.equal(groups[0].children[0].attributes.get('aria-label'), '주요 용도지역');
-  assert.equal(groups[0].children[1].textContent, '제공된 범례 캡처 견본 · 원본 SLD 색상값 미검증');
+  assert.equal(groups[0].children[1].textContent, '제공된 범례 캡처 기반 · 원본 SLD 색상값 미검증');
   const expectedAssets = ['urban-residential','urban-commercial','urban-industrial','urban-green',
     'management-conservation','management-production','management-planned','agriculture-forest','nature-conservation'];
   const actualSwatches = groups.flatMap((group) => group.children[0].children.map((item) => item.children[1].attributes.get('src')));

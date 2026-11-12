@@ -12,8 +12,10 @@ export function createLayout(root: HTMLElement) {
       <main class="map-shell" aria-label="전국 지도">
         <div id="map" tabindex="0" aria-label="지도. 방향키로 이동하고 더하기·빼기 키로 확대·축소할 수 있습니다."></div>
         <div class="basemap-controls" role="group" aria-label="배경지도 선택">
+          <div class="basemap-segment">
           <button type="button" data-basemap="base" aria-pressed="true" disabled>일반지도</button>
           <button type="button" data-basemap="satellite" aria-pressed="false" disabled>위성지도</button>
+          </div>
           <button type="button" data-map-names aria-label="위성지도 명칭 표시" aria-pressed="true" hidden disabled>명칭</button>
         </div>
         <div class="zoom-controls" role="group" aria-label="지도 확대·축소">

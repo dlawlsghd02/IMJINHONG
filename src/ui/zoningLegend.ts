@@ -38,7 +38,7 @@ export function createZoningGroupLegend(id: ZoningLayerId, apiKey: string | unde
     swatches.setAttribute('src', majorLegendSwatches[id][index]);
     item.append(label, swatches); major.append(item);
   });
-  const notice = document.createElement('p'); notice.className = 'zoning-color-note'; notice.textContent = '제공된 범례 캡처 견본 · 원본 SLD 색상값 미검증';
+  const notice = document.createElement('p'); notice.className = 'zoning-color-note'; notice.textContent = '제공된 범례 캡처 기반 · 원본 SLD 색상값 미검증';
   const details = document.createElement('button'); details.type = 'button'; details.textContent = '전체 세부 범례'; details.setAttribute('aria-expanded', 'false');
   details.className = 'zoning-details-toggle';
   const body = document.createElement('div'); body.hidden = true; body.id = `${prefix}-details`; details.setAttribute('aria-controls', body.id);

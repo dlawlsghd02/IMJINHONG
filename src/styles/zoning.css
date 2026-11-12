@@ -64,3 +64,29 @@
   .zoning-controls .zoning-group-row .zoning-legend-group-toggle,
   .zoning-controls .zoning-details-toggle { min-height: 44px; padding: 2px 6px; border-top: 10px solid transparent; border-bottom: 10px solid transparent; background-clip: padding-box; }
 }
+
+/* Quiet settings panel, with layer state distinct from legend expansion. */
+.zoning-controls > button { display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 12px; font-size: 12px; color: var(--ui-ink); border-color: var(--ui-border); border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); }
+.zoning-controls > button::before { content: ""; width: 18px; height: 18px; flex-shrink: 0; background: currentColor; mask: var(--icon-map) center / contain no-repeat; }
+.zoning-controls > button::after { content: "OFF"; margin-left: auto; padding: 3px 6px; border-radius: 5px; background: #F1F5F9; color: var(--ui-muted); font-size: 10px; }
+.zoning-controls > button[aria-pressed="true"] { color: var(--ui-accent); background: #EFF6FF; border-color: #BFDBFE; }
+.zoning-controls > button[aria-pressed="true"]::after { content: "ON"; color: #1D4ED8; background: #DBEAFE; }
+.zoning-controls fieldset { margin-top: 6px; padding: 8px 10px; border-color: var(--ui-border); border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); }
+.zoning-group-row { padding-block: 2px; border-bottom: 1px solid #F1F5F9; }
+.zoning-controls .zoning-kind { font-size: 12px; font-weight: 500; }
+.zoning-controls[data-enabled="true"] .zoning-kind:has(input:checked) { color: #1D4ED8; }
+.zoning-controls .zoning-visibility { font-size: 11px; color: var(--ui-muted); }
+.zoning-controls .zoning-opacity { margin-top: 8px; font-size: 11px; color: var(--ui-muted); }
+.zoning-opacity input { accent-color: var(--ui-accent); }
+.zoning-controls .zoning-group-row .zoning-legend-group-toggle,
+.zoning-controls .zoning-details-toggle { min-height: 30px; font-size: 12px; line-height: 18px; padding: 4px 7px; border: 1px solid var(--ui-border); color: #475569; background: #fff; font-weight: 500; box-shadow: none; }
+.zoning-group-body { display: flex; flex-direction: column; padding: 4px 2px 8px; gap: 6px; }
+.zoning-major-legend { order: 0; list-style: none; padding: 0; margin: 2px 0; }
+.zoning-major-legend li { padding: 5px 7px; border-radius: 6px; background: #F8FAFC; font-size: 12px; }
+.zoning-details-toggle { order: 1; align-self: flex-start; }
+.zoning-group-body > div { order: 2; }
+.zoning-controls .zoning-color-note { order: 3; font-size: 10px; line-height: 1.5; padding-top: 5px; margin: 0; color: var(--ui-muted); border-top: 1px solid #F1F5F9; }
+@media (max-width: 900px), (pointer: coarse) {
+  .zoning-controls .zoning-group-row .zoning-legend-group-toggle,
+  .zoning-controls .zoning-details-toggle { min-height: 44px; border-top: 7px solid transparent; border-bottom: 7px solid transparent; background-clip: padding-box; }
+}

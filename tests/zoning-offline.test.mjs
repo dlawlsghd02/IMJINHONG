@@ -98,6 +98,40 @@ test('상태: 로딩·실패 고정 안내·이전 설정 타일 무시·OFF 및
   f.toggle.fire('click'); f.source.dispatchEvent({ type: 'tileloaderror', tile }); assert.equal(f.status.hidden, true);
   f.dispose(); assert.equal(f.source.hasListener('tileloadstart'), false);
 });
+
+test('정상 상태 안내 미표시: 초기 ON·로딩·완료는 숨기고 오류만 표시, busy 상태 유지',()=>{
+  media.change(false);
+  const f=fixture();
+  try {
+    f.toggle.fire('click'); assert.equal(f.status.textContent,''); assert.equal(f.status.hidden,true);
+    const tile={getKey:()=>f.source.getKey()+'/1,2,3'};
+    f.source.dispatchEvent({type:'tileloadstart',tile});
+    assert.equal(f.status.textContent,''); assert.equal(f.status.hidden,true);
+    assert.equal(f.status.attributes.get('aria-busy'),'true');
+    f.source.dispatchEvent({type:'tileloadend',tile});
+    assert.equal(f.status.hidden,true); assert.equal(f.status.attributes.get('aria-busy'),'false');
+    f.source.dispatchEvent({type:'tileloaderror',tile});
+    assert.equal(f.status.hidden,false); assert.match(f.status.textContent,/1건 실패/);
+    f.toggle.fire('click'); assert.equal(f.status.hidden,true);
+  } finally {f.dispose();}
+});
+
+test('UI 상태 구분: 레이어 ON과 모바일 설정 접힘은 별도 표기하며 네 분류 유지',()=>{
+  media.change(true);
+  const calls=[],ui=api.createZoningControls((...args)=>calls.push(args),()=>{});
+  try {
+    const [button,options]=ui.root.children;
+    assert.equal(ui.root.attributes.get('data-enabled'),'false');
+    button.fire('click');
+    assert.equal(ui.root.attributes.get('data-enabled'),'true');
+    assert.match(button.attributes.get('aria-label'),/켜짐.*펼쳐짐/);
+    const count=calls.length; button.fire('click');
+    assert.equal(button.attributes.get('aria-pressed'),'true');
+    assert.equal(button.attributes.get('aria-expanded'),'false');
+    assert.match(button.attributes.get('aria-label'),/켜짐.*접힘/);
+    assert.equal(calls.length,count); assert.equal(kindLabels(options).length,4);
+  } finally {ui.dispose();media.change(false);}
+});
 test('기존 클릭 보호: WMS에는 지도 클릭 등록·속성·BOX 호출이 없음', async () => {
   const code = await readFile(new URL('../src/features/zoning.ts', import.meta.url), 'utf8');
   assert.equal(/singleclick|provider\.point|provider\.box|loadLand/.test(code), false);
